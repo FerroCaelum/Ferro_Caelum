@@ -1,39 +1,41 @@
+# coding: utf-8
+
 from django.db import models
-from django.core.validators import MinValueValidator
+
+'''
+Wszystkie statystyki odnoszące się do bohatera powinne być w 1 tabeli.
+
+Większość wartości defaultowych nie będzie używanych z uwagi na fakt, że statsy każdego bohatera będą przypisywane przy
+rejestracji w zależności od wyboru linii krwi, czy innych "rzeczy".
+
+Poprawiłem angielskie nazwy.
+'''
 
 class Hero(models.Model):
-    name = models.CharField(max_length=200)
-    energy = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0)
-    
-class Atributs(models.Model):
-    hero = models.OneToOneField(Hero)
-    b_pow = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base power
-    b_rns = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base resistans
-    b_dex = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base dexterity
-    b_per = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base perception
-    b_int = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base inteligens
-    b_web = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base web
-    b_rss = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #base resourcefulness
-
-class Main_stats(models.Model):
-    hero = models.OneToOneField(Hero)
-    b_hp = models.FloatField(validators = [MinValueValidator(1.0)], default=10.0) #Base hit points
-    b_ap = models.FloatField(validators = [MinValueValidator(1.0)], default=100.0) #base action points
-    b_sp = models.FloatField(validators = [MinValueValidator(0.001)], default=0.001) #base speed
-    
-class Ba_skills(models.Model): #Battle skills
-    hero = models.OneToOneField(Hero)
-    b_hide = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #Base hide
-    b_dete = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #Base detection
-    
-class Ba_proficiency(models.Model): #Battle proficiency
-    hero = models.OneToOneField(Hero)
-    p_mel = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #melee atackp proficiency
-    p_ran = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #range atack proficiency
-    p_pro = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #programing use proficiency
-    p_web = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #web use proficiency
-    p_ant = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #antiwirus defence proficiency
-    p_dod = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #dodge proficiency
-    p_hide = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #hide proficiency
-    p_dete = models.FloatField(validators = [MinValueValidator(0.0)], default=0.0) #Detection proficiency
-    p_move = models.FloatField(validators = [MinValueValidator(1.0)], default=1.0) #Proficiency in quick moves
+    name = models.CharField(max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+    energy = models.PositiveIntegerField(default=0.0)
+    #atrybuty
+    power = models.PositiveIntegerField(default=1.0) #moc
+    resistance = models.PositiveIntegerField(default=1.0) #wytrzymałość
+    dexterity = models.PositiveIntegerField(default=1.0) #zręczność
+    perception = models.PositiveIntegerField(default=1.0) #percepcja
+    intelligence = models.PositiveIntegerField(default=1.0) #inteligencja
+    web = models.PositiveIntegerField(default=1.0) #sieć
+    artifice = models.PositiveIntegerField(default=1.0) #spryt
+    #statystyki główne
+    hp = models.PositiveIntegerField(default=10) #punkty życia
+    ap = models.PositiveIntegerField(default=100) #punkty akcji
+    speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
+    #statystyki bojowe
+    camouflage = models.PositiveIntegerField(default=0.0) #kamuflaż
+    detection = models.PositiveIntegerField(default=0.0) #detekcja
+    #umiejętności walki
+    melee_attack = models.PositiveIntegerField(default=0.0) #atak wręcz
+    range_attack = models.PositiveIntegerField(default=0.0) #atak dystansowy
+    programming = models.PositiveIntegerField(default=0.0) #programowanie
+    web_use = models.PositiveIntegerField(default=0.0) #używanie sieci
+    antivirus_use = models.PositiveIntegerField(default=0.0) #obrona antywirusowa
+    dodge = models.PositiveIntegerField(default=0.0) #uniki
+    camouflage_use = models.PositiveIntegerField(default=0.0) #kamuflowanie się
+    detection_use = models.PositiveIntegerField(default=0.0) #wykrywanie
+    quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się

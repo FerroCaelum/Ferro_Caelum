@@ -1,19 +1,17 @@
-# Django settings for core project.
-
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    # ('episage', 'tilosag@gmail.com'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ferro_caelum_db',
-        'USER': 'pluszak',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'ferro_caelum',
+        'USER': 'admin',
         'PASSWORD': 'lubie zielone krasnoludy',
         'HOST': '/var/run/mysql',
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
@@ -28,7 +26,7 @@ TIME_ZONE = 'Europe/Warsaw Poland'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'pl-pl'
 
 SITE_ID = 1
 
@@ -97,10 +95,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'core.urls'
+ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'core.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
