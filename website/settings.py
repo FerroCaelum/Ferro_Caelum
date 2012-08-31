@@ -1,5 +1,8 @@
 import os
-ROOT_PATH = os.path.dirname(__file__)
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+import sys
+sys.path.append(ROOT_PATH)
+
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -13,11 +16,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ferro_caelum',
+        'NAME': '../ferro_caelum.sqlite',
         'USER': 'admin',
-        'PASSWORD': 'lubie zielone krasnoludy',
-        'HOST': '/var/run/mysql',
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'PASSWORD': 'admin',
+        'HOST': '',
+        'PORT': '',
     }
 }
 
