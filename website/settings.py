@@ -1,8 +1,11 @@
+import os
+ROOT_PATH = os.path.dirname(__file__)
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('episage', 'tilosag@gmail.com'),
+    ('episage', 'tilosag@gmail.com'),
 )
 
 MANAGERS = ADMINS
@@ -42,26 +45,27 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
+# Example: "/home/static/static.lawrence.com/static/"
 MEDIA_ROOT = ''
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# URL that handles the static served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+# Examples: "http://static.lawrence.com/static/", "http://example.com/static/"
 MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
+# Example: "/home/static/static.lawrence.com/static/"
 STATIC_ROOT = ''
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# Example: "http://static.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    os.path.join(ROOT_PATH, 'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -101,6 +105,7 @@ ROOT_URLCONF = 'urls'
 WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
+    os.path.join(ROOT_PATH, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -117,7 +122,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'hero'
+    'hero',
 )
 
 # A sample logging configuration. The only tangible logging
