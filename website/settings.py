@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '../ferro_caelum.sqlite',
+        'NAME': 'ferro_caelum.sqlite',
         'USER': 'admin',
         'PASSWORD': 'admin',
         'HOST': '',
