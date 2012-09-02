@@ -3,9 +3,10 @@
 {% block content %}
     Zarejestruj się albo zgiń!
     <form id="sign-up" method="post">
-        <div class="field">Login: <input type="text" value="login" name="login"/></div>
-        <div class="field">Email: <input type="text" value="email" name="email"/></div>
-        <div class="field">Hasło: <input type="password" value="hasło" name="password"/></div>
+        {#        <div class="field">Login: <input type="text" value="KonradOlivierChmiel" name="username"/></div>#}
+        {#        <div class="field">Email: <input type="text" value="kondex@o2.pl" name="email"/></div>#}
+        {#        <div class="field">Hasło: <input type="password" value="lubie krasnoludki" name="password"/></div>#}
+        {{ formset }}
         <input type="submit" value="Zarejestruj się"/>
         {% csrf_token %}
     </form>
