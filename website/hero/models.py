@@ -12,8 +12,7 @@ Poprawiłem angielskie nazwy.
 '''
 
 class Hero(models.Model):
-    name = models.CharField(
-        max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+    name = models.CharField(max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
     energy = models.PositiveIntegerField(default=0.0)
     #atrybuty
     power = models.PositiveIntegerField(default=1.0) #moc
