@@ -1,9 +1,8 @@
 from django.db import models
 
-
 class Item(models.Model):
     count = models.PositiveIntegerField()
-    #hero = models.ForeignKey(Hero)
+    hero = models.ForeignKey('hero.Hero')
 
 
 class Name(models.Model):

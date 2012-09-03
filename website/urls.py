@@ -1,9 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from views import Homepage
-from account import urls
-
-admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^$', Homepage.as_view()),
