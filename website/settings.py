@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'hero',
     'account',
+    'armory',
     )
 
 # A sample logging configuration. The only tangible logging

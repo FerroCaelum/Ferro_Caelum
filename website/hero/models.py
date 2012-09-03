@@ -14,6 +14,7 @@ Poprawiłem angielskie nazwy.
 class Hero(models.Model):
     name = models.CharField(max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
     energy = models.PositiveIntegerField(default=0.0)
+
     #atrybuty
     power = models.PositiveIntegerField(default=1.0) #moc
     resistance = models.PositiveIntegerField(default=1.0) #wytrzymałość
@@ -22,13 +23,16 @@ class Hero(models.Model):
     intelligence = models.PositiveIntegerField(default=1.0) #inteligencja
     web = models.PositiveIntegerField(default=1.0) #sieć
     artifice = models.PositiveIntegerField(default=1.0) #spryt
+
     #statystyki główne
     hp = models.PositiveIntegerField(default=10) #punkty życia
     ap = models.PositiveIntegerField(default=100) #punkty akcji
     speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
+
     #statystyki bojowe
     hiding = models.PositiveIntegerField(default=0.0) #ukrywanie
     detection = models.PositiveIntegerField(default=0.0) #detekcja
+
     #umiejętności walki
     melee_attack = models.PositiveIntegerField(default=0.0) #atak wręcz
     range_attack = models.PositiveIntegerField(default=0.0) #atak dystansowy
@@ -41,71 +45,4 @@ class Hero(models.Model):
     quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się
 
 
-class Item(models.Model):
-    count = models.PositiveIntegerField()
-    hero = models.ForeignKey(Hero)
 
-
-class Name(models.Model):
-    name = models.CharField(max_length=50)
-    item = models.ForeignKey(Item)
-
-
-class Weapon(models.Model):
-    speed = models.PositiveIntegerField()
-    hit_bonus = models.IntegerField()
-    piercing_dmg = models.IntegerField()
-    energetic_dmg = models.IntegerField()
-    critical = models.IntegerField()
-    item = models.ForeignKey(Item)
-
-
-class Armature(models.Model):
-    speed_mod = models.PositiveIntegerField()
-    energy_def = models.PositiveIntegerField()
-    piercing_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    camouflage = models.PositiveIntegerField()
-    item = models.ForeignKey(Item)
-
-
-class Helmet(models.Model):
-    energy_def = models.PositiveIntegerField()
-    piercing_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    detector = models.PositiveIntegerField()
-    programs_def = models.PositiveIntegerField()
-    item = models.ForeignKey(Item)
-
-
-class Program(models.Model):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    type = models.PositiveIntegerField()
-    duration = models.FloatField() # timedelta
-    item = models.ForeignKey(Item)
-
-
-class FieldTech(models.Model):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    energy_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    range_def = models.PositiveIntegerField()
-    durability = models.PositiveIntegerField()
-    count = models.PositiveIntegerField()
-    item = models.ForeignKey(Item)
-
-
-class WebTech(models.Model):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    energy_dmg = models.PositiveIntegerField()
-    strike_dmg = models.PositiveIntegerField()
-    piercing_dmg = models.PositiveIntegerField()
-    critic = models.PositiveIntegerField()
-    item = models.ForeignKey(Item)
-
-
-class SpecialProperties(models.Model):
-    item = models.ForeignKey(Item)
