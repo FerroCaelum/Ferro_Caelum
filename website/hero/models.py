@@ -1,7 +1,5 @@
 # coding: utf-8
 
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 from django.db import models
 
 """
@@ -15,10 +13,11 @@ Poprawiłem angielskie nazwy.
 
 class Owner(models.Model):
     name = models.CharField(
-        max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+        max_length=50
+    ) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
 
     def __unicode__(self):
-        return self.name
+        return u'%s' % self.name
 
 
 class Hero(Owner):
@@ -53,6 +52,15 @@ class Hero(Owner):
     detection_use = models.PositiveIntegerField(default=0.0) #wykrywanie
     quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się
 
+    #założone
+    melee_weapon = models.OneToOneField(ItemInstance)
+    range_weapon = models.OneToOneField(ItemInstance)
+
+
+    #inne
+    max_load = models.DecimalField(max_digits=10, decimal_places=2) #+funkcja agregująca obecny ładunek (nie umiem)
+    max_memory = models.DecimalField(max_digits=10, decimal_places=2) #+to samo
+
 # sorry ale jak mam to testować w kosoli i robić importy z różnych klas to mnie strzela. dla wygody musze
 # to tu przerzucic na chwile
 
@@ -60,17 +68,14 @@ class Item(models.Model):
     name = models.CharField(max_length=50, unique=True)
     weight = models.DecimalField(max_digits=10, decimal_places=5, default=0)
 
-    def spawn(self, count):
-        return ItemInstance(item=self, owner=None, count=count)
+    #    def spawn(self, count):
+    #        return ItemInstance(item=self, owner=None, count=count)
 
     def spawn(self, count, owner):
         return ItemInstance(item=self, owner=owner, count=count)
 
-    #    class Meta:
-    #        abstract=True
-
     def __unicode__(self):
-        return self.name
+        return u'%s' % self.name
 
 
 class ItemInstance(models.Model):
@@ -80,14 +85,15 @@ class ItemInstance(models.Model):
 
     def give(self, new_owner):
         self.owner = new_owner
+        return u'%s passed to %s' % (self, new_owner)
 
     def give(self, new_owner, count):
         if count <= 0:
             self.delete()
             self.save()
-            return 'You do not have any ' + str(self)
+            return u'You do not have any %s' % self
         if count > self.count:
-            return 'You can not give more than you have.'
+            return u'You can not give more than you have.'
         if count == self.count:
             self.give(new_owner)
         if count < self.count:
@@ -96,51 +102,14 @@ class ItemInstance(models.Model):
             if new_owner_items.count() == 1:
                 new_owner_items[0].count += count
             elif new_owner_items > 1:
-                raise Exception('Something bad happened in db.')
+                raise Exception(u'Something bad happened in db.')
             else:
                 new_instance = ItemInstance(item=self.item, owner=new_owner, count=count)
                 new_instance.save()
-            return str(count) + ' of ' + str(self) + ' passed to ' + str(new_owner)
+            return u'%s passed to %s' % (self, new_owner)
 
     def __unicode__(self):
-        return str(self.count) + ' of ' + self.item.name
-
-
-def FillDb():
-    from django.core.management import call_command
-
-    call_command('reset', 'hero')
-
-    rycerz = Hero(name='rycerz tomek')
-    rycerz.save()
-
-    miecz = Weapon(
-        name='miecz',
-        speed=2,
-        hit_bonus=4,
-        piercing_dmg=12,
-        energetic_dmg=0,
-        critical=20
-    )
-    miecz.save()
-    miecze = miecz.spawn(2, rycerz)
-    miecze.save()
-
-    grosz = Item(
-        name='Grosz',
-        weight=0.00164
-    )
-    grosz.save()
-
-    zloty = Item(
-        name=u'Złoty',
-        weight=0.005
-    )
-    zloty.save()
-    #tak jak jak w realu
-
-    zlote = zloty.spawn(10, rycerz)
-    zlote.save()
+        return u'%s[%s]' % (self.item, self.count)
 
 
 class Weapon(Item):
@@ -150,8 +119,6 @@ class Weapon(Item):
     energetic_dmg = models.IntegerField()
     critical = models.IntegerField()
 
-#    item = models.ForeignKey(Item)
-
 
 class Armature(Item):
     speed_mod = models.PositiveIntegerField()
@@ -159,8 +126,6 @@ class Armature(Item):
     piercing_def = models.PositiveIntegerField()
     strike_def = models.PositiveIntegerField()
     camouflage = models.PositiveIntegerField()
-
-#    item = models.ForeignKey(Item)
 
 
 class Helmet(Item):
@@ -170,16 +135,12 @@ class Helmet(Item):
     detector = models.PositiveIntegerField()
     programs_def = models.PositiveIntegerField()
 
-#    item = models.ForeignKey(Item)
-
 
 class Program(Item):
     speed = models.PositiveIntegerField()
     pool = models.PositiveIntegerField()
     type = models.PositiveIntegerField()
     duration = models.FloatField() # timedelta
-
-#    item = models.ForeignKey(Item)
 
 
 class FieldTech(Item):
@@ -191,8 +152,6 @@ class FieldTech(Item):
     durability = models.PositiveIntegerField()
     count = models.PositiveIntegerField()
 
-#    item = models.ForeignKey(Item)
-
 
 class WebTech(Item):
     speed = models.PositiveIntegerField()
@@ -201,8 +160,6 @@ class WebTech(Item):
     strike_dmg = models.PositiveIntegerField()
     piercing_dmg = models.PositiveIntegerField()
     critic = models.PositiveIntegerField()
-
-#    item = models.ForeignKey(Item)
 
 
 class SpecialProperties(models.Model):
