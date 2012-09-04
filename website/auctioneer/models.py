@@ -1,14 +1,10 @@
 from django.db import models
-from django.core import validators
-from website import hero
 from website.hero.models import *
 import datetime
 
 __author__ = 'episage'
 
-class AuctionHouse(models.Model):
-    name = models.CharField(max_length=50)
-
+class AuctionHouse(Owner):
     def put_up(self, item, min_price, valid_from, valid_to):
         if not valid_from < valid_to < datetime.datetime.now(): raise Exception()
         assert min_price >= 0
@@ -64,4 +60,4 @@ class _Bid(models.Model):
     auction_item = models.ForeignKey(AuctionItem)
 
     def __unicode__(self):
-        return hero.name + ' bid ' + str(self.bid)
+        return self.hero.name + ' bid ' + str(self.bid)

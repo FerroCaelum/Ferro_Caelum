@@ -128,6 +128,9 @@ INSTALLED_APPS = (
     'hero',
     'account',
     'armory',
+    'auctioneer',
+    'blackmarket',
+    'shop',
     )
 
 # A sample logging configuration. The only tangible logging
