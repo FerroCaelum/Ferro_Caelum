@@ -4,14 +4,14 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.db import models
 
-'''
+"""
 Wszystkie statystyki odnoszące się do bohatera powinne być w 1 tabeli.
 
 Większość wartości defaultowych nie będzie używanych z uwagi na fakt, że statsy każdego bohatera będą przypisywane przy
 rejestracji w zależności od wyboru linii krwi, czy innych "rzeczy".
 
 Poprawiłem angielskie nazwy.
-'''
+"""
 
 class Hero(models.Model):
     name = models.CharField(
