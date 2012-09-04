@@ -21,9 +21,6 @@ class AuctionHouse(Owner):
         ai.save()
         return ai
 
-    def __unicode__(self):
-        return self.name
-
 
 class AuctionItem(models.Model):
     item = models.OneToOneField(Item)
@@ -51,7 +48,7 @@ class AuctionItem(models.Model):
             return self.min_price
 
     def __unicode__(self):
-        return str(Name.objects.get(item=self.item))
+        return u'%s' % self.item.name
 
 
 class _Bid(models.Model):
@@ -60,4 +57,4 @@ class _Bid(models.Model):
     auction_item = models.ForeignKey(AuctionItem)
 
     def __unicode__(self):
-        return self.hero.name + ' bid ' + str(self.bid)
+        return u'%s bid %s' % (self.hero, self.bid)
