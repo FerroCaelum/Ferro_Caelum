@@ -133,6 +133,8 @@ INSTALLED_APPS = (
     'shop',
     )
 
+#korzystanie z get_profile() - ma zwracac account
+AUTH_PROFILE_MODULE = 'account.Account'
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
