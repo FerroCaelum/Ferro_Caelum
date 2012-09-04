@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.db import models
 
 '''
@@ -12,7 +14,8 @@ Poprawiłem angielskie nazwy.
 '''
 
 class Hero(models.Model):
-    name = models.CharField(max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
+    name = models.CharField(
+        max_length=50) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
     energy = models.PositiveIntegerField(default=0.0)
 
     #atrybuty
@@ -44,5 +47,86 @@ class Hero(models.Model):
     detection_use = models.PositiveIntegerField(default=0.0) #wykrywanie
     quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się
 
+    def __unicode__(self):
+        return self.name
+
+# sorry ale jak mam to testować w kosoli i robić importy z różnych klas to mnie strzela. dla wygody musze to tu przerzucic na chwile
+class Item(models.Model):
+    count = models.PositiveIntegerField()
+    owner = generic.GenericForeignKey()
+    #image=models.ImageField()
+
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    def __unicode__(self):
+        return str(self.count) + ' of ' + str(Name.objects.get(item=self))
 
 
+class Name(models.Model):
+    name = models.CharField(max_length=50)
+    item = models.ForeignKey(Item)
+
+    def __unicode__(self):
+        return self.name
+
+
+class Weapon(models.Model):
+    speed = models.PositiveIntegerField()
+    hit_bonus = models.IntegerField()
+    piercing_dmg = models.IntegerField()
+    energetic_dmg = models.IntegerField()
+    critical = models.IntegerField()
+    item = models.ForeignKey(Item)
+
+
+class Armature(models.Model):
+    speed_mod = models.PositiveIntegerField()
+    energy_def = models.PositiveIntegerField()
+    piercing_def = models.PositiveIntegerField()
+    strike_def = models.PositiveIntegerField()
+    camouflage = models.PositiveIntegerField()
+    item = models.ForeignKey(Item)
+
+
+class Helmet(models.Model):
+    energy_def = models.PositiveIntegerField()
+    piercing_def = models.PositiveIntegerField()
+    strike_def = models.PositiveIntegerField()
+    detector = models.PositiveIntegerField()
+    programs_def = models.PositiveIntegerField()
+    item = models.ForeignKey(Item)
+
+
+class Program(models.Model):
+    speed = models.PositiveIntegerField()
+    pool = models.PositiveIntegerField()
+    type = models.PositiveIntegerField()
+    duration = models.FloatField() # timedelta
+    item = models.ForeignKey(Item)
+
+
+class FieldTech(models.Model):
+    speed = models.PositiveIntegerField()
+    pool = models.PositiveIntegerField()
+    energy_def = models.PositiveIntegerField()
+    strike_def = models.PositiveIntegerField()
+    range_def = models.PositiveIntegerField()
+    durability = models.PositiveIntegerField()
+    count = models.PositiveIntegerField()
+    item = models.ForeignKey(Item)
+
+
+class WebTech(models.Model):
+    speed = models.PositiveIntegerField()
+    pool = models.PositiveIntegerField()
+    energy_dmg = models.PositiveIntegerField()
+    strike_dmg = models.PositiveIntegerField()
+    piercing_dmg = models.PositiveIntegerField()
+    critic = models.PositiveIntegerField()
+    item = models.ForeignKey(Item)
+
+
+class SpecialProperties(models.Model):
+    item = models.ForeignKey(Item)
