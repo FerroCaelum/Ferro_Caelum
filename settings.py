@@ -16,13 +16,13 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ferro_caelum.sqlite',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': '',
-        'PORT': '',
-        }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ferro_caelum_db',
+        'USER': 'pluszak',
+        'PASSWORD': 'lubie zielone krasnoludy',
+        'HOST': '/var/run/mysql',
+        'PORT': '', 
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:
