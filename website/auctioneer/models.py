@@ -1,8 +1,9 @@
-from django.db import models
-from website.hero.models import *
-import datetime
-
+# coding: utf-8
 __author__ = 'episage'
+
+from django.db import models
+from hero.models import *
+import datetime
 
 class AuctionHouse(Owner):
     def put_up(self, item, min_price, valid_from, valid_to):

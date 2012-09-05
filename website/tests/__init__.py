@@ -1,7 +1,7 @@
-from website.hero.models import *
-
+# coding: utf-8
 __author__ = 'episage'
 
+from website.hero.models import *
 from django.core.management import call_command
 
 call_command('reset', 'hero')

@@ -1,11 +1,13 @@
-from django.db import models
-from website.hero.models import Item, Owner
-
+# coding: utf-8
 __author__ = 'episage'
 
+from django.db import models
+from hero.models import Item, Owner, ItemInstance
+
 class Shop(Owner):
-    dioaw = models.IntegerField()
+    pass
 
 
-class ShopItem(Item):
-    price = models.PositiveIntegerField()
+class ShopItem(models.Model):
+    def get_price(self, hero):
+        raise NotImplementedError()

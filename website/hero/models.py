@@ -20,6 +20,51 @@ class Owner(models.Model):
         return u'%s' % self.name
 
 
+class Item(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    weight = models.DecimalField(max_digits=10, decimal_places=5, default=0)
+
+    #    def spawn(self, count):
+    #        return ItemInstance(item=self, owner=None, count=count)
+
+    def spawn(self, count, owner):
+        return ItemInstance(item=self, owner=owner, count=count)
+
+    def __unicode__(self):
+        return u'%s' % self.name
+
+
+class ItemInstance(models.Model):
+    item = models.ForeignKey(Item)
+    owner = models.ForeignKey(Owner)
+    count = models.PositiveIntegerField()
+
+    def give(self, new_owner, count=count):
+        if count <= 0:
+            self.delete()
+            self.save()
+            return u'You do not have any %s' % self
+        if count > self.count:
+            return u'You can not give more than you have.'
+        if count == self.count:
+            self.owner = new_owner
+            return u'%s passed to %s' % (self, new_owner)
+        if count < self.count:
+            self.count -= count
+            new_owner_iis = ItemInstance.objects.filter(owner=new_owner, item=self.item)
+            if new_owner_iis.count() == 1:
+                new_owner_iis[0].count += count
+            elif new_owner_iis > 1:
+                raise Exception(u'Something very bad happened in db.')
+            else:
+                new_instance = ItemInstance(item=self.item, owner=new_owner, count=count)
+                new_instance.save()
+            return u'%s passed to %s' % (self, new_owner)
+
+    def __unicode__(self):
+        return u'%s[%s]' % (self.item, self.count)
+
+
 class Hero(Owner):
     energy = models.PositiveIntegerField(default=0.0)
 
@@ -53,8 +98,8 @@ class Hero(Owner):
     quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się
 
     #założone
-    melee_weapon = models.OneToOneField(ItemInstance)
-    range_weapon = models.OneToOneField(ItemInstance)
+    #    melee_weapon = models.OneToOneField(ItemInstance)
+    #    range_weapon = models.OneToOneField(ItemInstance)
 
 
     #inne
@@ -63,53 +108,6 @@ class Hero(Owner):
 
 # sorry ale jak mam to testować w kosoli i robić importy z różnych klas to mnie strzela. dla wygody musze
 # to tu przerzucic na chwile
-
-class Item(models.Model):
-    name = models.CharField(max_length=50, unique=True)
-    weight = models.DecimalField(max_digits=10, decimal_places=5, default=0)
-
-    #    def spawn(self, count):
-    #        return ItemInstance(item=self, owner=None, count=count)
-
-    def spawn(self, count, owner):
-        return ItemInstance(item=self, owner=owner, count=count)
-
-    def __unicode__(self):
-        return u'%s' % self.name
-
-
-class ItemInstance(models.Model):
-    item = models.ForeignKey(Item)
-    owner = models.ForeignKey(Owner)
-    count = models.PositiveIntegerField()
-
-    def give(self, new_owner):
-        self.owner = new_owner
-        return u'%s passed to %s' % (self, new_owner)
-
-    def give(self, new_owner, count):
-        if count <= 0:
-            self.delete()
-            self.save()
-            return u'You do not have any %s' % self
-        if count > self.count:
-            return u'You can not give more than you have.'
-        if count == self.count:
-            self.give(new_owner)
-        if count < self.count:
-            self.count -= count
-            new_owner_items = ItemInstance.objects.filter(owner=new_owner, item=self.item)
-            if new_owner_items.count() == 1:
-                new_owner_items[0].count += count
-            elif new_owner_items > 1:
-                raise Exception(u'Something bad happened in db.')
-            else:
-                new_instance = ItemInstance(item=self.item, owner=new_owner, count=count)
-                new_instance.save()
-            return u'%s passed to %s' % (self, new_owner)
-
-    def __unicode__(self):
-        return u'%s[%s]' % (self.item, self.count)
 
 
 class Weapon(Item):

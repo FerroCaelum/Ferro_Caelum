@@ -17,11 +17,11 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': 'ferro_caelum.sqlite',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': '',
         'PORT': '',
-        }
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -160,6 +160,6 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
-        }
+        },
+    }
 }

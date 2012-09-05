@@ -1,22 +1,26 @@
-from django.db.models.signals import post_save
-
+# coding: utf-8
 __author__ = 'Tyr'
-from django.db import models
+
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
+from hero.models import Hero
+from django.db import models
 
-class Account(models.Model):
+class UserProfile(models.Model):
+    """
+    Użytkownik loguje się używając username i password z modelu User.
+    Postać ma inną nazwę, która jest w modelu Hero.
+    """
     user = models.OneToOneField(User)
-    #birthday = models.DateField
-    real_name = models.CharField(max_length=50)
+    hero = models.OneToOneField(Hero)
 
-    #providuje get_profile() - bedzie zwracac account. W krytycznym przypadku zmienic user.username na real_name
-    # pomysl - real_name to nazwa postaci, np inna niz nazwa logowania
     def __unicode__(self):
-        return self.user.username
+        return u'Profile of %s' % self.user.username
 
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Account.objects.create(user=instance)
+        UserProfile.objects.create(user=instance)
 
+# to jest w dobrym miejscu? \/
 post_save.connect(create_user_profile, sender=User)

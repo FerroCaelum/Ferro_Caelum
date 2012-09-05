@@ -1,6 +1,6 @@
-from django.db import models
-
+# coding: utf-8
 __author__ = 'episage'
+from hero.models import Owner
 
-class BlackMarket(models.Model):
-    name = models.CharField(max_length=50)
+class BlackMarket(Owner):
+    pass
