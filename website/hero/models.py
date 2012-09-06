@@ -12,6 +12,7 @@ Poprawiłem angielskie nazwy.
 """
 
 class Owner(models.Model):
+    max_load = models.DecimalField(max_digits=10, decimal_places=2) #+funkcja agregująca obecny ładunek (nie umiem)
     name = models.CharField(
         max_length=50
     ) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
@@ -55,7 +56,7 @@ class ItemInstance(models.Model):
             if new_owner_iis.count() == 1:
                 new_owner_iis[0].count += count
             elif new_owner_iis > 1:
-                raise Exception(u'Something very bad happened in db.')
+                raise u"Error(u'Something very bad happened in db.')"
             else:
                 new_instance = ItemInstance(item=self.item, owner=new_owner, count=count)
                 new_instance.save()
@@ -65,22 +66,35 @@ class ItemInstance(models.Model):
         return u'%s[%s]' % (self.item, self.count)
 
 
-class Hero(Owner):
+class Being():
     energy = models.PositiveIntegerField(default=0.0)
-
-    #atrybuty
-    power = models.PositiveIntegerField(default=1.0) #moc
+    speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
     resistance = models.PositiveIntegerField(default=1.0) #wytrzymałość
     dexterity = models.PositiveIntegerField(default=1.0) #zręczność
     perception = models.PositiveIntegerField(default=1.0) #percepcja
     intelligence = models.PositiveIntegerField(default=1.0) #inteligencja
+    pass
+
+
+class CanTakeDmg():
+    hp = models.PositiveIntegerField(default=10) #punkty życia
+    pass
+
+
+class CanGiveDmg():
+    ap = models.PositiveIntegerField(default=100) #punkty akcji
+    pass
+
+
+class Hero(Being, CanTakeDmg, CanGiveDmg, Owner):
+    #atrybuty
+    power = models.PositiveIntegerField(default=1.0) #moc
+
     web = models.PositiveIntegerField(default=1.0) #sieć
     artifice = models.PositiveIntegerField(default=1.0) #spryt
 
     #statystyki główne
-    hp = models.PositiveIntegerField(default=10) #punkty życia
-    ap = models.PositiveIntegerField(default=100) #punkty akcji
-    speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
+
 
     #statystyki bojowe
     hiding = models.PositiveIntegerField(default=0.0) #ukrywanie
@@ -103,8 +117,21 @@ class Hero(Owner):
 
 
     #inne
-    max_load = models.DecimalField(max_digits=10, decimal_places=2) #+funkcja agregująca obecny ładunek (nie umiem)
+
     max_memory = models.DecimalField(max_digits=10, decimal_places=2) #+to samo
+
+    def Attack(self, hero):
+        pass
+
+
+class BattleContext():
+    def __init__(self, beings):
+        self.beings = beings
+        pass
+
+
+class Board():
+    pass
 
 # sorry ale jak mam to testować w kosoli i robić importy z różnych klas to mnie strzela. dla wygody musze
 # to tu przerzucic na chwile
