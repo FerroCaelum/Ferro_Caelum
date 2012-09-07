@@ -78,6 +78,7 @@ class Ability(models.Model):
     description = models.CharField(max_length=500)
     abilities_requirements = models.ManyToManyField('self', through='Ability_requierment', 
                                                     symmetrical=False, related_name='requires')
+    blood_line_requirement = models.ForeignKey(BloodLine, blank=True)
     def add_required_ability(self, ability):
         Ability_requierment, created = Ability_requierment.objects.get_or_create(
             ability_require=self,
@@ -102,7 +103,3 @@ class Effect(models.Model):
     type = models.SmallIntegerField()
     effect = models.PositiveIntegerField()
     hero = models.ManyToManyField(Hero)
-       
-class BloodLineAbility(models.Model):
-    blood_line = models.ForeignKey(BloodLine)
-    ability = models.OneToOneField(Ability)
