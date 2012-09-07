@@ -56,7 +56,7 @@ class ItemInstance(models.Model):
             if new_owner_iis.count() == 1:
                 new_owner_iis[0].count += count
             elif new_owner_iis > 1:
-                raise u"Error(u'Something very bad happened in db.')"
+                raise u"Something very bad happened in db."
             else:
                 new_instance = ItemInstance(item=self.item, owner=new_owner, count=count)
                 new_instance.save()
@@ -67,12 +67,6 @@ class ItemInstance(models.Model):
 
 
 class Being():
-    energy = models.PositiveIntegerField(default=0.0)
-    speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
-    resistance = models.PositiveIntegerField(default=1.0) #wytrzymałość
-    dexterity = models.PositiveIntegerField(default=1.0) #zręczność
-    perception = models.PositiveIntegerField(default=1.0) #percepcja
-    intelligence = models.PositiveIntegerField(default=1.0) #inteligencja
     pass
 
 
@@ -87,14 +81,23 @@ class CanGiveDmg():
 
 
 class Hero(Being, CanTakeDmg, CanGiveDmg, Owner):
-    #atrybuty
-    power = models.PositiveIntegerField(default=1.0) #moc
+    lvl = models.PositiveIntegerField(default=1)
+    experience = models.PositiveIntegerField(default=0)
+    energy = models.PositiveIntegerField(default=20)
 
+    #atrybuty
+    power = models.PositiveIntegerField(default=1) #moc
+    resistance = models.PositiveIntegerField(default=1.0) #wytrzymałość
+    dexterity = models.PositiveIntegerField(default=1.0) #zręczność
+    perception = models.PositiveIntegerField(default=1.0) #percepcja
+    intelligence = models.PositiveIntegerField(default=1.0) #inteligencja
     web = models.PositiveIntegerField(default=1.0) #sieć
     artifice = models.PositiveIntegerField(default=1.0) #spryt
 
     #statystyki główne
-
+    #CanTakeDmg
+    #CanGiveDmg
+    speed = models.PositiveIntegerField(default=5) #prędkość http://pl.wikipedia.org/wiki/Kilometr_na_godzin%C4%99
 
     #statystyki bojowe
     hiding = models.PositiveIntegerField(default=0.0) #ukrywanie
@@ -112,8 +115,8 @@ class Hero(Being, CanTakeDmg, CanGiveDmg, Owner):
     quick_move = models.PositiveIntegerField(default=1.0) #szybkie poruszanie się
 
     #założone
-    #    melee_weapon = models.OneToOneField(ItemInstance)
-    #    range_weapon = models.OneToOneField(ItemInstance)
+    #   melee_weapon = models.OneToOneField(ItemInstance,related_name="melee")
+    #range_weapon = models.OneToOneField(ItemInstance)
 
 
     #inne
