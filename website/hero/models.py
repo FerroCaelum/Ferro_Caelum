@@ -66,10 +66,6 @@ class ItemInstance(models.Model):
         return u'%s[%s]' % (self.item, self.count)
 
 
-class Being():
-    pass
-
-
 class CanTakeDmg():
     hp = models.PositiveIntegerField(default=10) #punkty życia
     pass
@@ -118,26 +114,10 @@ class Hero(Being, CanTakeDmg, CanGiveDmg, Owner):
     #   melee_weapon = models.OneToOneField(ItemInstance,related_name="melee")
     #range_weapon = models.OneToOneField(ItemInstance)
 
-
-    #inne
-
     max_memory = models.DecimalField(max_digits=10, decimal_places=2) #+to samo
 
     def Attack(self, hero):
         pass
-
-
-class BattleContext():
-    def __init__(self, beings):
-        self.beings = beings
-        pass
-
-
-class Board():
-    pass
-
-# sorry ale jak mam to testować w kosoli i robić importy z różnych klas to mnie strzela. dla wygody musze
-# to tu przerzucic na chwile
 
 
 class Weapon(Item):
