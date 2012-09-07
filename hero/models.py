@@ -74,15 +74,14 @@ class Hero(models.Model):
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
 
 class Ability(models.Model):
-    TYPE_CHOICES = (
-        ('p', 'Pasywna, modyfikuje jednokrotnie'),
-        ('p-a', 'Pasywna, stale modyfikuje'),
-        ('a', 'Aktywowana'),
-    )
-    type = models.CharField(max_length=3, choices=TYPE_CHOICES, default='p')
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=500)
     hero = models.ManyToManyField(Hero)
+    type = models.SmallIntegerField()
+    
+class Effect(models.Model): 
+    ability = models.ForeignKey(Ability)
+    effect = models.IntegerField()
        
 class BloodLineAbility(models.Model):
     blood_line = models.ForeignKey(BloodLine)
