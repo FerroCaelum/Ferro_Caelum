@@ -1,4 +1,9 @@
-# Django settings for ferro_caelum project.
+import os
+
+ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
+import sys
+
+sys.path.append(ROOT_PATH)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -16,7 +21,7 @@ DATABASES = {
         'USER': 'pluszak',
         'PASSWORD': 'lubie zielone krasnoludy',
         'HOST': '/var/run/mysql',
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'PORT': '',
     }
 }
 
@@ -44,48 +49,49 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/media/"
+# Example: "/home/static/static.lawrence.com/static/"
 MEDIA_ROOT = ''
 
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# URL that handles the static served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
-# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+# Examples: "http://static.lawrence.com/static/", "http://example.com/static/"
 MEDIA_URL = ''
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
+# Example: "/home/static/static.lawrence.com/static/"
 STATIC_ROOT = ''
 
 # URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
+# Example: "http://static.lawrence.com/static/"
 STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
+    os.path.join(ROOT_PATH, 'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
+    )
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 's$$#$k^it6-&amp;9)i=n10vhusrm^v09e)x3lwsz*icy6bum$-i!t'
+SECRET_KEY = 'kb&amp;i@x$mu6-w^nxl=+@i#bpe5juqikv2yn2ca=!5r$xi!ht778'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
-)
+    #     'django.template.loaders.eggs.Loader',
+    )
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -95,18 +101,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
+    )
 
-ROOT_URLCONF = 'ferro_caelum.urls'
+ROOT_URLCONF = 'urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'ferro_caelum.wsgi.application'
+WSGI_APPLICATION = 'wsgi.application'
 
 TEMPLATE_DIRS = (
+    os.path.join(ROOT_PATH, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-)
+    )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -123,7 +130,7 @@ INSTALLED_APPS = (
     'blood_line',
     'profession',
     'special_ability',
-)
+    )
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -150,6 +157,6 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-        },
-    }
+            },
+        }
 }
