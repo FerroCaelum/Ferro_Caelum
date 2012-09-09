@@ -18,7 +18,7 @@ class Weapon(models.Model):
     critical = models.IntegerField()
     item = models.ForeignKey(Item)
 
-#armor.
+      #armor.
 class Armature(models.Model):
     speed_mod = models.PositiveIntegerField()
     energy_def = models.PositiveIntegerField()
