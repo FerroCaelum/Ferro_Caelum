@@ -1,14 +1,14 @@
-Ability.type
-Type okresla przepis kiedy i gdzie stosowac zdolnosc. Jest reprezentowany prze 4 cyfry:
+Ability.when_and_where
+when_and_where okresla przepis kiedy i gdzie stosowac zdolnosc. Jest reprezentowany prze 4 cyfry:
 1. reprezentuje miejsce stosowania:
-	0: statystyki glowne
-	1: statystyki bojowe
-	2: statsytyki niebojowe
-	3: progres
+	1: statystyki glowne
+	2: statystyki bojowe
+	3: statsytyki niebojowe
+	4: progres
 2. reprezentuje czas stosowania:
-	0: natychmiastowy - trwala zmiana lub na poczatku wyliczania statystyk pobocznych (np. +2 do punktow akcji)
-	1: staly - przy kazdym wyliczaniu lub zmianie statystyk brany pod uwage (np. zwiekszenie obrazecn 5%)
-	2: aktywowany - po aktywowaniu dziala przez okreslony czas
+	1: natychmiastowy - trwala zmiana lub na poczatku wyliczania statystyk pobocznych (np. +2 do punktow akcji)
+	2: staly - przy kazdym wyliczaniu lub zmianie statystyk brany pod uwage (np. zwiekszenie obrazecn 5%)
+	3: aktywowany - po aktywowaniu dziala przez okreslony czas
 3-4. koszt w punktach akcji (tylko zdolność aktywowana)
 
 Effect.effect	
