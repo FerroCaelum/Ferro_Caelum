@@ -1,3 +1,9 @@
+
+
+NIEAKTUALNE, przechowywane na potrzeby wglądu w potrzebne atrybuty
+
+
+
 Ability.when_and_where
 when_and_where okresla przepis kiedy i gdzie stosowac zdolnosc. Jest reprezentowany prze 4 cyfry:
 1. reprezentuje miejsce stosowania:
