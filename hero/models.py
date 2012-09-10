@@ -15,12 +15,13 @@ class Hero(models.Model):
     profession = models.ForeignKey(Profession)
     experience = models.PositiveIntegerField(default=0)
     energy = models.PositiveIntegerField(default=20)
+    energy_regeneration = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
     ability = models.ManyToManyField(Ability)
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
-    dexterity = models.PositiveIntegerField(default=1) #zręczność
+    dexterity = models.PositiveIntegerField(default=1) #sprawność
     perception = models.PositiveIntegerField(default=1) #percepcja
     intelligence = models.PositiveIntegerField(default=1) #inteligencja
     web = models.PositiveIntegerField(default=1) #sieć
@@ -33,7 +34,7 @@ class Hero(models.Model):
     detection = models.PositiveIntegerField(default=0) #detekcja
     hide = models.PositiveIntegerField(default=0) #kamuflaż
     trade = models.PositiveIntegerField(default=0) #handel
-    #wyćwiczenie
+    #wyćwiczenie (doświadczenie)
     #>Bojowe
     melee_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #atak wręcz
     range_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #atak dystansowy
