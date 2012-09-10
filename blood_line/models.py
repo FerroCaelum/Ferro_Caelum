@@ -20,3 +20,5 @@ class BloodLine(models.Model):
     detection = models.PositiveIntegerField(default=0) #detekcja
     hide = models.PositiveIntegerField(default=0) #kamuflaż
     trade = models.PositiveIntegerField(default=0) #handel
+    def __unicode__(self):
+        return self.name    

@@ -4,6 +4,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from blood_line.models import BloodLine
 from profession.models import Profession
+from special_ability.models import Ability
     
 
 class Hero(models.Model):
@@ -15,6 +16,7 @@ class Hero(models.Model):
     experience = models.PositiveIntegerField(default=0)
     energy = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
+    ability = models.ManyToManyField(Ability)
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
@@ -44,3 +46,5 @@ class Hero(models.Model):
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
+    def __unicode__(self):
+        return self.name
