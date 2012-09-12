@@ -34,21 +34,24 @@ class Ability(models.Model):
              if e!=effects[effects.count()-1]:  descriptions += ", "
          return descriptions
     def add_required_ability(self, ability):
-        AbilityRequierment, created = AbilityRequierment.objects.get_or_create(
-            ability_require=self,
-            ability_required=person)
-        return relationship
+        ability_requierment, created = AbilityRequierment.objects.get_or_create(
+            require=self,
+            required=ability)
+        return ability_requierment
     def remove_required_ability(self, ability):
         AbilityRequierment.objects.filter(
-             ability_require=self,
-             ability_required=ability).delete()
+             require=self,
+             required=ability).delete()
         return     
+    def get_abilities_requirements(self):
+        return self.abilities_requirements.filter(
+             required__require=self)
     def __unicode__(self):
         return self.name
    
 class AbilityRequierment(models.Model):
-    ability_require = models.ForeignKey(Ability, related_name='require')
-    ability_required = models.ForeignKey(Ability, related_name='required')
+    require = models.ForeignKey(Ability, related_name='require')
+    required = models.ForeignKey(Ability, related_name='required')
     
 class StatsRequierment(models.Model):
     ability = models.ForeignKey(Ability)
