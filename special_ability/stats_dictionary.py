@@ -30,6 +30,8 @@ def get_stats_name(number, where):
             str=u'odporność'
         elif number==14:
             str=u'odporność'
+        elif number==15:
+            str=u'poziom'
         else:
             str=u''
     elif where==2: #Statystyki bojowe
