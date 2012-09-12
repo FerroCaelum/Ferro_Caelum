@@ -60,10 +60,8 @@ class Effect(models.Model):
     variable_position = models.PositiveSmallIntegerField();
     percent = models.BooleanField();
     active_informations = models.PositiveSmallIntegerField(null=True) #not supported
-    def get_variable_string(self, where, dic=None): #not supported
-        if dic==None:
-            dic = stats_dictionary.dictionary()
-        return dic.get_stats_name(self.variable_position, where)
+    def get_variable_string(self, where): #not supported
+        return stats_dictionary.get_stats_name(self.variable_position, where)
     def get_value_unit(self):
         return '%' if self.percent else ''
     def get_description(self, ability):
