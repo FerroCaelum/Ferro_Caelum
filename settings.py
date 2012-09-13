@@ -9,20 +9,20 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    ('episage', 'tilosag@gmail.com'),
-    )
+    # ('Your Name', 'your_email@example.com'),
+)
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ferro_caelum.sqlite',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': '',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ferro_caelum_db',
+        'USER': 'pluszak',
+        'PASSWORD': 'lubie zielone krasnoludy',
+        'HOST': '/var/run/mysql',
         'PORT': '',
-        }
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -127,6 +127,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'hero',
+    'blood_line',
+    'profession',
+    'special_ability',
     )
 
 # A sample logging configuration. The only tangible logging
