@@ -9,13 +9,11 @@ __author__ = 'Tyr'
 
 from django.db import models
 from django.contrib.auth.models import User
+from hero.models import Hero
 
 class Account(models.Model):
     user = models.OneToOneField(User)
-    #hero = models.OneToOneField(models.ForeignKey('hero.Hero'))  #nie mam zielonego pojecia, czy to zadziala.
-                                                                  # Ale jak tak, to genialne.
-                                                                  #nie zadzialalo. Trzeba zaimportowac,
-                                                                  # ale wywala mi bledy
+    hero = models.OneToOneField(Hero)
     real_name = models.CharField(max_length=50)
 
 

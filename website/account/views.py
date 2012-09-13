@@ -13,7 +13,7 @@ def AccountRegistration(request):
             user = User.objects.create_user(username=form.cleaned_data['username'], email=form.cleaned_data['email'],
             password=form.cleaned_data['password'])
             user.save()
-            account = user.get_profile()
+            account = user.gejest_profile()
             account.name = form.cleaned_data.get('real_name', None)
             account.save()
             return HttpResponseRedirect('/profile/')
