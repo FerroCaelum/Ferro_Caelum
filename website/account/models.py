@@ -3,9 +3,6 @@ from django.db.models.signals import post_save
 
 
 __author__ = 'Tyr'
-#   obecny problem - polaczenie konta uzytkownika i bohatera.
-#   proponowane rozwiazanie - podobnie jak polaczenie user z account - OneToOneField z hero
-#   jeden issue - po rejestracji wypadaloby odsylac do tworzenia bohatera. Znow post_save?
 
 from django.db import models
 from django.contrib.auth.models import User
