@@ -4,7 +4,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from blood_line.models import BloodLine
 from profession.models import Profession
-from special_ability.models import SpecialAbility
+from talent.models import Talent
     
 
 class Hero(models.Model):
@@ -17,7 +17,7 @@ class Hero(models.Model):
     energy = models.PositiveIntegerField(default=20)
     energy_regeneration = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
-    ability = models.ManyToManyField(SpecialAbility)
+    talent = models.ManyToManyField(Talent)
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość

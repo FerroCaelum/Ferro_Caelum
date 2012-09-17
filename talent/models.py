@@ -2,33 +2,35 @@
 
 from django.db import models
 from blood_line.models import BloodLine
-from general.models import Effect
 import general.stats_dictionary
 
-
-class SpecialAbility(models.Model):
-    abilities_requirements = models.ManyToManyField('self', through='AbilityRequierment',
+class Talent(models.Model):
+    """Przy awnsie można go wybrać przy awansie, jeśli posiada się wymagane talenty i ma wystarczające wartości statystyk.
+    Niektóre talenty są zarezerwowane tylko dla konkretnych linii krwi"""
+    name = models.CharField(max_length=50)
+    additional_description = models.CharField(max_length=200, blank=True)
+    talent_requirements = models.ManyToManyField('self', through='TalentRequierment',
                                                     symmetrical=False, related_name='requires')
     blood_line_requirement = models.ForeignKey(BloodLine, null=True)
     def add_required_ability(self, ability):
-        ability_requierment, created = AbilityRequierment.objects.get_or_create(
+        ability_requierment, created = TalentRequierment.objects.get_or_create(
             require=self,
             required=ability)
         return ability_requierment
     def remove_required_ability(self, ability):
-        AbilityRequierment.objects.filter(
+        TalentRequierment.objects.filter(
              require=self,
              required=ability).delete()
         return     
     def get_abilities_requierments(self):
-        return self.abilities_requirements.filter(
+        return self.talent_requirements.filter(
              required__require=self)
     def get_effects(self):
-        return EffectOfSpecialAbility.objects.filter(ability__pk=self.pk)
+        return EffectOfTalent.objects.filter(ability__pk=self.pk)
     def get_stats_requierments(self):
         return StatsRequierment.objects.filter(ability__pk=self.pk)
-    def get_abilities_requirements_description(self):
-         requiraments = self.get_abilities_requirements()
+    def get_talent_requirements_description(self):
+         requiraments = self.get_talent_requirements()
          descriptions = self.name + ' wymaga: '
          for a in requiraments:
              descriptions +=  a.__unicode__()
@@ -41,13 +43,24 @@ class SpecialAbility(models.Model):
              descriptions +=  r.get_description(self)
              if r!=requiraments[requiraments.count()-1]:  descriptions += ", "
          return descriptions
+    def get_effects(self):
+        return EffectOfTalent.objects.filter(ability__pk=self.pk)
+    def get_effects_description(self):
+         effects = self.get_effects()
+         descriptions = self.name + ' zmienia: '
+         for e in effects:
+             descriptions +=  e.get_description()
+             if e!=effects[effects.count()-1]:  descriptions += ", "
+         return descriptions
+    def __unicode__(self):
+        return self.name
    
-class AbilityRequierment(models.Model):
-    require = models.ForeignKey(Ability, related_name='require')
-    required = models.ForeignKey(SpecialAbility, related_name='required')
+class TalentRequierment(models.Model):
+    require = models.ForeignKey(Talent, related_name='require')
+    required = models.ForeignKey(Talent, related_name='required')
     
 class StatsRequirement(models.Model):
-    ability = models.ForeignKey(SpecialAbility)
+    talent = models.ForeignKey(Talent)
     value = models.PositiveSmallIntegerField();
     variable = models.PositiveSmallIntegerField();
     def get_variable_string(self, where):
@@ -57,7 +70,3 @@ class StatsRequirement(models.Model):
         return des + str(self.value)       
     def __unicode__(self):
         return "Wymaganie statystyk " + str(self.id)
-        
-    
-class EffectOfSpecialAbility(Effect): 
-    ability = models.ForeignKey(SpecialAbility)

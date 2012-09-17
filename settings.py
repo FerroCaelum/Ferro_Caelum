@@ -17,7 +17,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ferro_caelum_db',
+        'NAME': 'ferro_caelum',
         'USER': 'pluszak',
         'PASSWORD': 'lubie zielone krasnoludy',
         'HOST': '/var/run/mysql',
@@ -129,7 +129,9 @@ INSTALLED_APPS = (
     'hero',
     'blood_line',
     'profession',
-    'special_ability',
+    'ability',
+    'talent',
+    'effect',
     )
 
 # A sample logging configuration. The only tangible logging
