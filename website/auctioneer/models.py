@@ -1,4 +1,6 @@
 # coding: utf-8
+from armory.models import BaseItem
+
 __author__ = 'episage'
 
 from django.db import models
@@ -6,15 +8,14 @@ from hero.models import *
 import datetime
 
 class AuctionHouse(Owner):
-    def put_up(self, item, min_price, valid_from, valid_to):
-        if not valid_from < valid_to < datetime.datetime.now(): raise Exception()
-        assert min_price >= 0
-        assert isinstance(item, Item)
-        if not item.owner == self:
-            item.owner = self
+    def put_up(self, ii, min_price, valid_from, valid_to):
+        if not valid_from < valid_to < datetime.datetime.now(): raise u"err"
+        if min_price < 0: return u"Minimal price must be greater or equal to zero."
+        if not ii.owner == self:
+            ii.owner = self
 
         ai = AuctionItem(
-            item=item,
+            item=ii,
             min_price=min_price,
             valid_from=valid_from,
             valid_to=valid_to
@@ -24,7 +25,7 @@ class AuctionHouse(Owner):
 
 
 class AuctionItem(models.Model):
-    item = models.OneToOneField(Item)
+    item = models.OneToOneField(BaseItem)
     description = models.TextField()
     min_price = models.PositiveIntegerField()
     valid_from = models.DateTimeField()

@@ -1,7 +1,10 @@
 # coding: utf-8
+from armory.models import Weapon
+from hero.models import Hero
+
 __author__ = 'episage'
 
-from website.hero.models import *
+from armory.models import *
 from django.core.management import call_command
 
 call_command('reset', 'hero')
@@ -21,13 +24,13 @@ miecz.save()
 miecze = miecz.spawn(2, rycerz)
 miecze.save()
 
-grosz = Item(
+grosz = Money(
     name='Grosz',
     weight=0.00164
 )
 grosz.save()
 
-zloty = Item(
+zloty = Money(
     name=u'Złoty',
     weight=0.005
 )
