@@ -1,6 +1,4 @@
 import os
-
-ROOT_PATH = os.path.dirname(os.path.abspath(__file__))
 import sys
 
 sys.path.append(ROOT_PATH)
@@ -132,6 +130,12 @@ INSTALLED_APPS = (
     'ability',
     'talent',
     'effect',
+    'hero',
+    'account',
+    'armory',
+    'auctioneer',
+    'blackmarket',
+    'shop',
     )
 
 # A sample logging configuration. The only tangible logging

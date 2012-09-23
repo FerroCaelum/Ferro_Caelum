@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    Zarejestruj się albo zgiń!
+    {{ form.errors }}
+    <form id="sign-up" method="post">
+        <div class="field"><label>
+            Login:
+            <input type="text" value="KonradOlivierChmiel" name="username"/>
+        </label></div>
+
+        <div class="field">Email: <label>
+            <input type="text" value="kondex@o2.pl" name="email"/>
+        </label></div>
+        <div class="field"><label>
+            Hasło:
+            <input type="password" value="lubie krasnoludki" name="password"/>
+        </label></div>
+        <input type="submit" value="Zarejestruj się"/>
+        {% csrf_token %}
+    </form>
+{% endblock %}

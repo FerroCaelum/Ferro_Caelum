@@ -5,9 +5,18 @@ from django.core.validators import MinValueValidator
 from blood_line.models import BloodLine
 from profession.models import Profession
 from talent.models import Talent
-    
+  
+class Owner(models.Model):
+    max_load = models.DecimalField(max_digits=10, decimal_places=2,
+        default=80) #+funkcja agregująca obecny ładunek (nie umiem)
+    name = models.CharField(
+        max_length=50
+    ) # http://stackoverflow.com/questions/20958/list-of-standard-lengths-for-database-fields
 
-class Hero(models.Model):
+    def __unicode__(self):
+        return u'%s' % self.name  
+
+class Hero(Owner):
     name = models.CharField(max_length=60)
     lvl = models.PositiveIntegerField(default=1)
     lvl_points = models.PositiveIntegerField(default=100)
