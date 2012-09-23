@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Language" content="pl-pl"/>
+    <title>{% block title %}The Web framework for perfectionists with deadlines{% endblock %} | Django</title>
+    <meta name="ROBOTS" content="ALL"/>
+    <meta name="Copyright" content="Zespół Ferro Caelum"/>
+    <meta name="keywords" content="Ferro Caelum, gry, mmo"/>
+    <meta name="description" content="Gra przeglądarkowa."/>
+    <link href="{{ STATIC_URL }}css/base.css" rel="stylesheet" type="text/css" media="screen"/>
+    {% block extrahead %}{% endblock %}
+</head>
+<body>
+{% block content %}Witaj Geju.{% endblock %}
+
+<div id="footer">
+    <p>&copy; {% now "Y" %} <a href="http://www.ferro-caelum.com/">Ferro Caelum</a><br/>
+        Redmine hosting graciously provided by <a href="http://www.hostedredmine.com/">HostedRedmine.com</a>.
+    </p>
+</div>
+</body>
+</html>
