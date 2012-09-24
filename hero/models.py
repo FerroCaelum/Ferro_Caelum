@@ -17,7 +17,6 @@ class Owner(models.Model):
         return u'%s' % self.name  
 
 class Hero(Owner):
-    name = models.CharField(max_length=60)
     lvl = models.PositiveIntegerField(default=1)
     lvl_points = models.PositiveIntegerField(default=100)
     blood_line = models.ForeignKey(BloodLine)   
