@@ -75,10 +75,6 @@ class Hero(Owner):
         for effect in em:
             multi+=effect.value
         return 0.01*multi*(self.power+sum)
-    def print_all_effects(self):
-        effect=self.get_hero_effects()
-        for e in effect: 
-            print e.get_description()
     def get_updated_power(self):
         return 
     def __unicode__(self):
