@@ -26,7 +26,9 @@ class Hero(Owner):
     energy = models.PositiveIntegerField(default=20)
     energy_regeneration = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
+    
     talent = models.ManyToManyField(Talent)
+    
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
@@ -35,14 +37,17 @@ class Hero(Owner):
     intelligence = models.PositiveIntegerField(default=1) #inteligencja
     web = models.PositiveIntegerField(default=1) #sieć
     artifice = models.PositiveIntegerField(default=1) #spryt
+    
     #statystyki główne
     hp = models.PositiveIntegerField(default=10) #punkty życia
     ap = models.PositiveIntegerField(default=100) #punkty akcji
     speed = models.PositiveIntegerField(default=100) #prędkość
+    
     #umiejętności
     detection = models.PositiveIntegerField(default=0) #detekcja
     hide = models.PositiveIntegerField(default=0) #kamuflaż
     trade = models.PositiveIntegerField(default=0) #handel
+    
     #wyćwiczenie (doświadczenie)
     #>Bojowe
     melee_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #atak wręcz
@@ -56,26 +61,79 @@ class Hero(Owner):
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
-    def get_hero_effects(self):
+    
+    def get_statistic(self, number):
+        if number == 1: 
+            return self.power
+        if number == 2: 
+            return self.resistance
+        if number == 3: 
+            return self.dexterity
+        if number == 4: 
+            return self.perception
+        if number == 5: 
+            return self.intelligence
+        if number == 6: 
+            return self.web
+        if number == 7: 
+            return self.artifice
+        if number == 8: 
+            return self.hp
+        if number == 9: 
+            return self.ap
+        if number == 10: 
+            return self.speed
+        if number == 11: 
+            return self.hide
+        if number == 12: 
+            return self.detection
+        if number == 13: 
+            return self.trade
+        
+    def get_updated_statistic(self, number):
         talents = Talent.objects.filter(hero__pk=self.pk)
-        acumulator=[]
-        for t in talents:
-            acumulator += EffectOfTalent.objects.filter(talent__pk=t.pk)
-        return acumulator
-    def get_main_stats_effect(self):
-        return self.get_hero_effects().filter(where_works=1)
-    def get_updated_power(self):
-        effects = self.get_main_stats_effect().filter(variable=1)
-        es = effects.filter(percent=False)
+        talents_set_sum = set()
         sum = 0
-        for effect in es:
-            sum+=effect.value     
-        em = effects.filter(percent=True)
+        talents_set_multi = set()
         multi = 100
-        for effect in em:
-            multi+=effect.value
-        return 0.01*multi*(self.power+sum)
+        
+        for t in talents:
+            talents_set_sum.add(EffectOfTalent.objects.filter(talent__pk = t.pk).filter(where_works = number).filter(variable = number).filter(percent = False))
+        for effects_set in talents_set_sum:
+            for e in effects_set:
+                sum+=e.value   
+                  
+        for t in talents:
+            talents_set_multi.add(EffectOfTalent.objects.filter(talent__pk = t.pk).filter(where_works = number).filter(variable = number).filter(percent = True))
+        for effects_set in talents_set_multi:
+            for e in effects_set:
+                multi+=e.value   
+        return 0.01*multi*(self.get_updated_statistic(number)+sum)        
+    
     def get_updated_power(self):
-        return 
+#        talents = Talent.objects.filter(hero__pk=self.pk)
+#        talents_set_sum = set()
+#        sum = 0
+#        talents_set_multi = set()
+#        multi = 100
+#        
+#        for t in talents:
+#            talents_set_sum.add(EffectOfTalent.objects
+#                                .filter(talent__pk=t.pk).filter(where_works=1)
+#                                .filter(variable=1).filter(percent=False))
+#        for _set in talents_set_sum:
+#            for e in _set:
+#                sum+=e.value   
+#                  
+#        for t in talents:
+#            talents_set_multi.add(EffectOfTalent.objects
+#                                  .filter(talent__pk=t.pk).filter(where_works=1)
+#                                  .filter(variable=1).filter(percent=True))
+#        for _set in talents_set_multi:
+#            for e in _set:
+#                multi+=e.value   
+#        return 0.01*multi*(self.power+sum)
+        return self.get_updated_statistic(1)
+    
     def __unicode__(self):
         return self.name
