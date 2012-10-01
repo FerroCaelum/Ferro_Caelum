@@ -108,7 +108,7 @@ class Hero(Owner):
         for effects_set in talents_set_multi:
             for e in effects_set:
                 multi+=e.value   
-        return 0.01*multi*(self.get_updated_statistic(number)+sum)        
+        return 0.01*multi*(self.get_statistic(number)+sum)        
     
     def get_updated_power(self):
 #        talents = Talent.objects.filter(hero__pk=self.pk)

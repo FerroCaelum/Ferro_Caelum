@@ -23,14 +23,12 @@ def get_stats_name(number, where):
         elif number==10:
             str=u'prędkość poruszania'
         elif number==11:
-            str=u'wykrycz'
+            str=u'ukrywanie'
         elif number==12:
-            str=u'handel'
+            str=u'wykrycie'
         elif number==13:
-            str=u'odporność'
+            str=u'handel'
         elif number==14:
-            str=u'odporność'
-        elif number==15:
             str=u'poziom'
         else:
             str=u''
