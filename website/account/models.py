@@ -11,7 +11,7 @@ from hero.models import Hero
 class Account(models.Model):
     user = models.OneToOneField(User)
     hero = models.OneToOneField(Hero)
-    real_name = models.CharField(max_length=50)
+    real_name = models.CharField(max_length=50)#imie bohatera.
 
 
 

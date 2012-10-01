@@ -10,7 +10,8 @@ class RegistrationForm(ModelForm):
     email       = forms.EmailField(label=(u'Email Address'))
     password    = forms.CharField(label=(u'Password'), widget=forms.PasswordInput(render_value=False))
     password_re = forms.CharField(label=(u'Verify Password'),widget=forms.PasswordInput(render_value=False))
-
+    #age
+    #sex
     class Meta:
         model = Account
         exclude = ('user',)
