@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from hero.models import Hero
 from django.db import models
 
-class UserProfile(models.Model):
+class Account(models.Model):
     """
     Użytkownik loguje się używając username i password z modelu User.
     Postać ma inną nazwę, która jest w modelu Hero.
