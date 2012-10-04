@@ -83,20 +83,13 @@ class Hero(Owner):
             return self.ap
         if number == 10: 
             return self.speed
-        if number == 11: 
-            return self.hide
-        if number == 12: 
-            return self.detection
-        if number == 13: 
-            return self.trade
         
     def get_updated_statistic(self, number):
         talents = Talent.objects.filter(hero__pk=self.pk)
         talents_set_sum = set()
         sum = 0
         talents_set_multi = set()
-        multi = 100
-        
+        multi = 100        
         for t in talents:
             talents_set_sum.add(EffectOfTalent.objects.filter(talent__pk = t.pk).filter(where_works = number).filter(variable = number).filter(percent = False))
         for effects_set in talents_set_sum:
@@ -108,32 +101,32 @@ class Hero(Owner):
         for effects_set in talents_set_multi:
             for e in effects_set:
                 multi+=e.value   
-        return 0.01*multi*(self.get_statistic(number)+sum)        
+        stat = self.get_statistic(number)       
+        if stat:
+            return 0.01*multi*(stat+sum)   
+        else: 
+            return stat
     
     def get_updated_power(self):
-#        talents = Talent.objects.filter(hero__pk=self.pk)
-#        talents_set_sum = set()
-#        sum = 0
-#        talents_set_multi = set()
-#        multi = 100
-#        
-#        for t in talents:
-#            talents_set_sum.add(EffectOfTalent.objects
-#                                .filter(talent__pk=t.pk).filter(where_works=1)
-#                                .filter(variable=1).filter(percent=False))
-#        for _set in talents_set_sum:
-#            for e in _set:
-#                sum+=e.value   
-#                  
-#        for t in talents:
-#            talents_set_multi.add(EffectOfTalent.objects
-#                                  .filter(talent__pk=t.pk).filter(where_works=1)
-#                                  .filter(variable=1).filter(percent=True))
-#        for _set in talents_set_multi:
-#            for e in _set:
-#                multi+=e.value   
-#        return 0.01*multi*(self.power+sum)
         return self.get_updated_statistic(1)
+    def get_updated_resistance(self):
+        return self.get_updated_statistic(2)
+    def get_updated_dexterity(self):
+        return self.get_updated_statistic(3)
+    def get_updated_perception(self):
+        return self.get_updated_statistic(4)
+    def get_updated_intelligence(self):
+        return self.get_updated_statistic(5)
+    def get_updated_web(self):
+        return self.get_updated_statistic(6)
+    def get_updated_artifice(self):
+        return self.get_updated_statistic(7)
+    def get_updated_hp(self):
+        return self.get_updated_statistic(8)
+    def get_updated_ap(self):
+        return self.get_updated_statistic(9)
+    def get_updated_speed(self):
+        return self.get_updated_statistic(10)
     
     def __unicode__(self):
         return self.name

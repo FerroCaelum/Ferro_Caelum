@@ -45,8 +45,24 @@ class HeroEffectsTest(TestCase):
                 ok = False    
         self.assertEqual(ok, True)
 
-#    def test_update_power(self):
-#        self.assertEqual(self.hero.get_updated_statistic(1), 130)
-#        
-#    def test_update_resistance(self):
-#        self.assertEqual(self.hero.get_updated_statistic(2), 260)   
+    def test_update_power(self):
+        self.assertEqual(self.hero.get_updated_power(), 260)
+    def test_update_resistance(self):
+        self.assertEqual(self.hero.get_updated_resistance(), 390)  
+    def test_update_dexterity(self):
+        self.assertEqual(self.hero.get_updated_dexterity(), 520)       
+    def test_update_perception(self):
+        self.assertEqual(self.hero.get_updated_perception(), 650)    
+    def test_update_intelligencetest(self):
+        self.assertEqual(self.hero.get_updated_intelligence(), 780)    
+    def test_update_web(self):
+        self.assertEqual(self.hero.get_updated_web(), 910)    
+    def test_update_artifice(self):
+        self.assertEqual(self.hero.get_updated_artifice(), 1040)    
+    def test_update_hp(self):
+        self.assertEqual(self.hero.get_updated_hp(), 403)    
+    def test_update_ap(self):
+        self.assertEqual(self.hero.get_updated_ap(), 273)    
+    def test_update_speed(self):
+        self.assertEqual(self.hero.get_updated_speed(), 468)       
+     
