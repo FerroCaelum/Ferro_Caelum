@@ -20,7 +20,7 @@ class Account(models.Model):
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        Account.objects.create(user=instance)
 
 # to jest w dobrym miejscu? \/
 post_save.connect(create_user_profile, sender=User)
