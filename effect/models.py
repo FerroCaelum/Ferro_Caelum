@@ -1,41 +1,34 @@
 # coding: utf-8
 from django.db import models
-from talent.models import Talent
-from ability.models import Ability
 import general.stats_dictionary
 
 class Effect(models.Model): 
     """Reprezentuje podjedyńczą modyfikację statystyki (np. mocy w statystykach głównych).
     Może być przypisany do talentu, zdolności lub przedmiotu"""
+    STATS_KINDS = (
+                  (1, "Statystyki główne"),
+                  (2, "Statystyki bojowe"),
+                  (3, "Statystkyi niebojowe"),
+                  (4, "Progres"),
+                  ) 
     value = models.SmallIntegerField();
     variable = models.PositiveSmallIntegerField();
     percent = models.BooleanField();
-    where_works = models.PositiveSmallIntegerField()
-    def where_works_string(self):
-        if self.where_works == 1:
-             return "statystyki glowne"
-        if self.where_works == 2:
-             return "statystyki bojowe"
-        if self.where_works == 3:
-             return "statystyki niebojowe"
-        if self.where_works == 4:
-             return "progres"
+    where_works = models.PositiveSmallIntegerField(choices = STATS_KINDS)
+    
     def get_variable_string(self):
-        return stats_dictionary.get_stats_name(self.variable, self.where_works)
+        """Zwraca nazwę zmiennej, na którą wpływa efekt"""
+        return general.stats_dictionary.get_stats_name(self.variable, self.where_works)
+    
     def get_value_unit(self):
+        """Zwraca jednostkę w jakiej jest podana wartość efektu"""
         return '%' if self.percent else ''
+    
     def get_description(self):
+        """Generuje opis działania efektu"""
         des = self.get_variable_string() + ' o '                       
         if self.value>=0: des += '+'     
         return des + str(self.value) + self.get_value_unit()  
+    
     def __unicode__(self):
         return "Efekt "+str(self.id)
-    
-        class Meta:
-            abstract = True
-            
-class EffectOfTalent(Effect): 
-    talent = models.ForeignKey(Talent)
-    
-class EffectOfAbility(Effect):
-    ability = models.ForeignKey(Ability)
