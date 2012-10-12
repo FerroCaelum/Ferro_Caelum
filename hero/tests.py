@@ -12,7 +12,7 @@ from effect.models import *
 import sys
 
 
-class HeroEffectsTest(TestCase):
+class HeroUpdateStatistics(TestCase):
     def setUp(self):
         self.malkavian = BloodLine(name="Malkavian", power=8, resistance=8, dexterity=8, perception=9, intelligence=10, web=10, artifice=1,
                               hp=10, ap=100, speed=100, detection=0, hide=2, trade=0)
@@ -22,47 +22,27 @@ class HeroEffectsTest(TestCase):
         self.knight.save()
         self.hero=Hero(max_load=100, name="Baron Duck", lvl=200, lvl_points=0, blood_line=self.malkavian, profession=self.knight, 
                        experience=0,
-                       energy=100, energy_regeneration=30, gold=12345, power=190, resistance=290, dexterity=390, perception=490, intelligence=590, 
-                       web=690, artifice=790, hp=300, ap=200, speed=350, detection=890, hide=990, trade=1090)
+                       energy=100, energy_regeneration=30, gold=12345, power=70, resistance=170, dexterity=270, perception=370, intelligence=470, 
+                       web=570, artifice=670, hp=770, ap=870, speed=970, detection=1070, hide=1170, trade=1270)
         self.hero.save() 
+    
+    def test_update_statistics(self):
         for x in range(1, 13):
             self.talent1 = Talent(name="Overpower" + str(x))
             self.talent1.save()
-            self.effect1 = EffectOfTalent(talent = self.talent1, value = 10, variable = x, percent = False, where_works = x)
-            self.effect2 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = True, where_works = x)
-            self.effect3 = EffectOfTalent(talent = self.talent1, value = 20, variable = x+1, percent = True, where_works = x)
-            self.effect4 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = False, where_works = x+1)
+            self.effect1 = EffectOfTalent(talent = self.talent1, value = 10, variable = x, percent = False, where_works = 1)
+            self.effect2 = EffectOfTalent(talent = self.talent1, value = 20, variable = x, percent = False, where_works = 1)
+            self.effect3 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = False, where_works = 2)
+            self.effect4 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = True, where_works = 1)
             self.effect1.save()
             self.effect2.save()
             self.effect3.save()
             self.effect4.save()
             self.hero.talent.add(self.talent1)
             
-    def test_update_statistics(self):
         ok = True
         for x in range(1, 13):
-            if (self.hero.get_updated_statistic(x) == 100+ x*130):
+            if (self.hero.get_updated_statistic(x) == x*130):
                 ok = False    
         self.assertEqual(ok, True)
 
-    def test_update_power(self):
-        self.assertEqual(self.hero.get_updated_power(), 260)
-    def test_update_resistance(self):
-        self.assertEqual(self.hero.get_updated_resistance(), 390)  
-    def test_update_dexterity(self):
-        self.assertEqual(self.hero.get_updated_dexterity(), 520)       
-    def test_update_perception(self):
-        self.assertEqual(self.hero.get_updated_perception(), 650)    
-    def test_update_intelligencetest(self):
-        self.assertEqual(self.hero.get_updated_intelligence(), 780)    
-    def test_update_web(self):
-        self.assertEqual(self.hero.get_updated_web(), 910)    
-    def test_update_artifice(self):
-        self.assertEqual(self.hero.get_updated_artifice(), 1040)    
-    def test_update_hp(self):
-        self.assertEqual(self.hero.get_updated_hp(), 403)    
-    def test_update_ap(self):
-        self.assertEqual(self.hero.get_updated_ap(), 273)    
-    def test_update_speed(self):
-        self.assertEqual(self.hero.get_updated_speed(), 468)       
-     

@@ -128,5 +128,8 @@ class Hero(Owner):
     def get_updated_speed(self):
         return self.get_updated_statistic(10)
     
+    def has_talent(self, talent):
+        return True if Talent.objects.filter(hero__pk=self.pk) else False
+    
     def __unicode__(self):
         return self.name
