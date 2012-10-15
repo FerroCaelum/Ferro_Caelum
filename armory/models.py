@@ -5,20 +5,18 @@ from hero.models import Owner
 class Item:
     name = models.CharField(max_length=50, unique=True)
     load = models.DecimalField(max_digits=16, decimal_places=5, default=0)
+    location = models.ForeignKey(ItemPlace) # plecak, prawa ręka, lewa ręka, buty, etc.
+    min_lvl = models.PositiveIntegerField()
 
     #    icon =models.ImageField()
-    #
-    #    stackable=models.BooleanField(default=True)
-    #
-    #    sellable=models.BooleanField(default=True)
-    #
+    #    stackable=models.BooleanField(default=True) # niepotrzebne - nie ma ograniczenia miejsc w eq
+    sellable = models.BooleanField(default=True)
     #    droppable=models.BooleanField(default=True)
-    #
-    #    destroyable=models.BooleanField(default=True)
-    #
-    #    tradeable=models.BooleanField(default=True)
-    #
+    destroyable = models.BooleanField(default=True)
+    tradeable = models.BooleanField(default=True)
     #    depositable=models.BooleanField(default=True)
+    enchantable = models.BooleanField(default=True)
+    #equipable=models.BooleanField(default=True) # niepotrzebne - null w location
 
     def spawn(self, count, owner):
         """
@@ -42,7 +40,6 @@ class ItemInstance(models.Model):
 
     item = models.ForeignKey(Item)
     owner = models.ForeignKey(Owner)
-    location = models.ForeignKey(ItemPlace) # plecak, prawa ręka, lewa ręka, buty, etc.
     _count = models.PositiveIntegerField()
 
     @property
@@ -67,6 +64,9 @@ class ItemInstance(models.Model):
         else:
             self._count = value
         self.owner.load = newLoad
+
+    def destroy(self):
+        self.delete()
 
     def __unicode__(self):
         return u'%s[%s]' % (self.base_item, self.count)
