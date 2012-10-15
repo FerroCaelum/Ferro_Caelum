@@ -2,12 +2,12 @@
 
 from django.db import models
 from django.core.validators import MinValueValidator
-from armory.models import ItemInstance, Item
+import armory.models
 from blood_line.models import BloodLine
 from profession.models import Profession
 from talent.models import Talent
 
-class Owner:
+class Owner(models.Model):
     name = models.CharField(max_length=50)
 
     max_load = models.DecimalField(max_digits=10, decimal_places=2, default=80)
@@ -25,12 +25,12 @@ class Owner:
         :rtype: Items
         """
 
-        assert item is Item
+        assert item is armory.models.Item
         assert new_owner is Owner
         assert count is int
 
-        if not item.tradeable: raise u'Item is not tradeable'
-        itemInstances = ItemInstance.objects.filter(owner=self, item=item)
+        if not item.tradeable: raise u'%s is not tradeable.' % self.name
+        itemInstances = armory.models.ItemInstance.objects.filter(owner=self, item=item)
         itemInstancesCount = itemInstances.count()
         if itemInstancesCount <= 0: raise u'%s does not have any of %s.' % self.name, item.name
         if itemInstancesCount > 0: raise u'Server error! Item=%s Owner=%s.' % item.name, self.name
@@ -40,23 +40,20 @@ class Owner:
         itemInstance.count -= count
         itemInstance.item.spawn(count, new_owner)
 
-    class Meta:
-        abstract = True
-
     def __unicode__(self):
         return u'%s' % self.name
 
 
-class Hero(Owner, models.Model):
+class Hero(Owner):
     lvl = models.PositiveIntegerField(default=1)
     lvl_points = models.PositiveIntegerField(default=100)
-    blood_line = models.ForeignKey(BloodLine)
-    profession = models.ForeignKey(Profession)
+    blood_line = models.ForeignKey(BloodLine, null=True)
+    profession = models.ForeignKey(Profession, null=True)
     experience = models.PositiveIntegerField(default=0)
     energy = models.PositiveIntegerField(default=20)
     energy_regeneration = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
-    talent = models.ManyToManyField(Talent)
+    talent = models.ManyToManyField(Talent, null=True)
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
