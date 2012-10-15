@@ -29,6 +29,7 @@ class Owner:
         assert new_owner is Owner
         assert count is int
 
+        if not item.tradeable: raise u'Item is not tradeable'
         itemInstances = ItemInstance.objects.filter(owner=self, item=item)
         itemInstancesCount = itemInstances.count()
         if itemInstancesCount <= 0: raise u'%s does not have any of %s.' % self.name, item.name
