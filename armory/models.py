@@ -24,7 +24,7 @@ class Item:
         """
         Tworzy nowy item z powietrza.
         """
-        if count <= 0: raise "Cannot spawn less then 1 items."
+        if count <= 0: raise u'Cannot spawn less then 1 items.'
 
         return ItemInstance(item=self, owner=owner, count=count)
 
@@ -51,7 +51,7 @@ class ItemInstance(models.Model):
 
     @count.setter
     def count(self, value):
-        if value < 0: raise "Negative count? Really?"
+        if value < 0: raise u'Negative count? Really?'
         itemLoad = self.item.load
         newLoad = self.owner.load +\
                   (itemLoad * self.count # current load
