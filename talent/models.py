@@ -27,36 +27,29 @@ class Talent(models.Model):
     stats_requirements = models.ManyToManyField(StatsRequirement, blank=True)
     talents_required = models.ManyToManyField('self', symmetrical=False)
     blood_line_requirement = models.ForeignKey(BloodLine, null=True)  
-    def get_effects(self):
-        """Zwraca listę efektów przypisanych do"""
-        pass
-    
-    def get_stats_requierments(self):
-        """Zwraca listę wymagań w statystykach, koniecznych do wykupienia talentu, z którego jest woływana ta metoda"""
-        return StatsRequierment.objects.filter(talent__pk=self.pk)
     
     def get_talent_requirements_description(self):
         """Zwraca słowny opis wymaganych talentów, koniecznych do wykupienia talentu, z którgo jest wywoływana ta metoda"""
-        requiraments = self.get_talent_requirements()
-        descriptions = self.name + ' wymaga: '
-        for a in requiraments:
-            descriptions +=  a.__unicode__()
-            if a!=requiraments[requiraments.count()-1]:  descriptions += ", "  
+        requirements = self.talents_required.all()
+        descriptions = 'Wymagane talenty: '
+        for r in requirements:
+            descriptions +=  r.__unicode__()
+            if r!=requirements[requirements.count()-1]:  descriptions += ", "  
         return descriptions      
      
     def get_stats_requirements_description(self):
          """Zwraca słowny opis wymaganych statystyk, koniecznych do wykupienia talentu, z którgo jest wywoływana ta metoda"""
-         requiraments = self.get_stats_requierments()
-         descriptions = self.name + ' wymaga '
-         for r in requiraments:
+         requirements = self.stats_requirements.all()
+         descriptions = 'Wymagania w statystykach: '
+         for r in requirements:
              descriptions +=  r.get_description(self)
-             if r!=requiraments[requiraments.count()-1]:  descriptions += ", "
+             if r!=requirements[requirements.count()-1]:  descriptions += ", "
          return descriptions
 
     def get_effects_description(self):
          """Zwaca słowny opis efektów zapewnianych przez talent"""
-         effects = self.get_effects()
-         descriptions = self.name + ' zmienia: '
+         effects = self.effects.all()
+         descriptions = 'Efekty zmienia: '
          for e in effects:
              descriptions +=  e.get_description()
              if e!=effects[effects.count()-1]:  descriptions += ", "

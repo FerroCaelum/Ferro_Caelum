@@ -6,10 +6,10 @@ class Effect(models.Model):
     """Reprezentuje podjedyńczą modyfikację statystyki (np. mocy w statystykach głównych).
     Może być przypisany do talentu, zdolności lub przedmiotu"""
     STATS_KINDS = (
-                  (1, "Statystyki główne"),
-                  (2, "Statystyki bojowe"),
-                  (3, "Statystkyi niebojowe"),
-                  (4, "Progres"),
+                  (1, u"Statystyki główne"),
+                  (2, u"Statystyki bojowe"),
+                  (3, u"Statystkyi niebojowe"),
+                  (4, u"Progres"),
                   ) 
     value = models.SmallIntegerField();
     variable = models.PositiveSmallIntegerField();

@@ -27,7 +27,7 @@ class Hero(Owner):
     energy_regeneration = models.PositiveIntegerField(default=20)
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
     
-    talent = models.ManyToManyField(Talent)
+    talents = models.ManyToManyField(Talent)
     
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
@@ -63,6 +63,7 @@ class Hero(Owner):
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
     
     def get_statistic(self, number):
+        """Metoda zwracająca wartość statystyki o podanym numerze. UWAGA: metoda niekompletna"""
         if number == 1: 
             return self.power
         if number == 2: 
@@ -85,25 +86,32 @@ class Hero(Owner):
             return self.speed
         
     def get_updated_statistic(self, number):
-        talents = Talent.objects.filter(hero__pk=self.pk)
-        talents_set_sum = set()
-        sum = 0
-        talents_set_multi = set()
-        multi = 100        
+        """Metoda zwracająca wartość statystyki o danym numerze z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących. UWAGA: metoda niekompletna - uwzględnia efekty pochodzące jedynie od talentów"""
+        tes = set() #Zbiór wszystkich efektów addytywnych wpływajacych na daną statystykę,
+                      # pobrana ze wszystkich talentów bohatera
+        tem = set() #Zbiór wszystkich efektów multiplikatywnych wpływajacych na daną statystykę,
+                      # pobrana ze wszystkich talentów bohatera
+        s = 0
+        m = 100
+        talents = self.talents.all()
+            
         for t in talents:
-            talents_set_sum.add(EffectOfTalent.objects.filter(talent__pk = t.pk).filter(where_works = number).filter(variable = number).filter(percent = False))
-        for effects_set in talents_set_sum:
-            for e in effects_set:
-                sum+=e.value   
-                  
+            tes.add(t.effects.filter(where_works = number).filter(variable = number).filter(percent = False))
         for t in talents:
-            talents_set_multi.add(EffectOfTalent.objects.filter(talent__pk = t.pk).filter(where_works = number).filter(variable = number).filter(percent = True))
-        for effects_set in talents_set_multi:
+            tes.add(t.effects.filter(where_works = number).filter(variable = number).filter(percent = True))
+            
+        for effects_set in tes:
             for e in effects_set:
-                multi+=e.value   
+                s += e.value   
+            
+        for effects_set in tem:
+            for e in effects_set:
+                m += e.value   
+                
         stat = self.get_statistic(number)       
         if stat:
-            return 0.01*multi*(stat+sum)   
+            return 0.01*m*(stat+s)   
         else: 
             return stat
     
@@ -127,9 +135,6 @@ class Hero(Owner):
         return self.get_updated_statistic(9)
     def get_updated_speed(self):
         return self.get_updated_statistic(10)
-    
-    def has_talent(self, talent):
-        return True if Talent.objects.filter(hero__pk=self.pk) else False
     
     def __unicode__(self):
         return self.name

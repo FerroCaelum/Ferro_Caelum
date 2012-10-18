@@ -9,7 +9,6 @@ from profession.models import Profession
 from hero.models import Hero
 from talent.models import *
 from effect.models import *
-import sys
 
 
 class HeroUpdateStatistics(TestCase):
@@ -25,24 +24,43 @@ class HeroUpdateStatistics(TestCase):
                        energy=100, energy_regeneration=30, gold=12345, power=70, resistance=170, dexterity=270, perception=370, intelligence=470, 
                        web=570, artifice=670, hp=770, ap=870, speed=970, detection=1070, hide=1170, trade=1270)
         self.hero.save() 
-    
-    def test_update_statistics(self):
-        for x in range(1, 13):
-            self.talent1 = Talent(name="Overpower" + str(x))
-            self.talent1.save()
-            self.effect1 = EffectOfTalent(talent = self.talent1, value = 10, variable = x, percent = False, where_works = 1)
-            self.effect2 = EffectOfTalent(talent = self.talent1, value = 20, variable = x, percent = False, where_works = 1)
-            self.effect3 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = False, where_works = 2)
-            self.effect4 = EffectOfTalent(talent = self.talent1, value = 30, variable = x, percent = True, where_works = 1)
-            self.effect1.save()
-            self.effect2.save()
-            self.effect3.save()
-            self.effect4.save()
-            self.hero.talent.add(self.talent1)
+        
+    def test_one_effect(self):
+        self.hero.talents.create(name = "Overpower")
+        self.hero.talents.all()[0].effects.create(value = 10, variable = 1, percent = False, where_works = 1)
+        self.assertEqual(self.hero.power+10, self.hero.get_updated_statistic(1))
+        
+    def test_many_effect(self):
+        self.hero.talents.create(name = "Overpower")
+        talent = self.hero.talents.all()[0]
+        talent.effects.create(value = 10, variable = 1, percent = False, where_works = 1)
+        talent.effects.create(value = 20, variable = 1, percent = False, where_works = 1)
+        talent.effects.create(value = 15, variable = 1, percent = True, where_works = 1)
+        talent.effects.create(value = 25, variable = 1, percent = True, where_works = 1)
+        talent.effects.create(value = 1000, variable = 2, percent = False, where_works = 1)
+        talent.effects.create(value = 1000, variable = 1, percent = False, where_works = 2)
+        self.assertEqual((self.hero.power + 30) * 1.4, self.hero.get_updated_statistic(1))
+        
+    def test_many_talents(self):
+        talents_set = set()
+        add_number = 10
+        for i in range(1, add_number+1):
+            talent = Talent(name = "talent "+str(i))
+            talent.save()
+            talent.effects.create(value = 1, variable = 1, percent = False, where_works = 1)
+            self.hero.talents.add(talent)
+        self.assertEqual(self.hero.power + add_number, self.hero.get_updated_statistic(1))
             
-        ok = True
-        for x in range(1, 13):
-            if (self.hero.get_updated_statistic(x) == x*130):
-                ok = False    
-        self.assertEqual(ok, True)
+    def test_many_talents_many_effects(self):
+        talents_set = set()
+        add_number = 10
+        for i in range(1, add_number+1):
+            talent = Talent(name = "talent "+str(i))
+            talent.save()
+            talent.effects.create(value = 1, variable = 1, percent = False, where_works = 1)
+            talent.effects.create(value = 2, variable = 1, percent = False, where_works = 1)
+            talent.effects.create(value = 3, variable = 1, percent = True, where_works = 1)
+            talent.effects.create(value = 4, variable = 1, percent = True, where_works = 1)
+            self.hero.talents.add(talent)
+        self.assertEqual((self.hero.power + 3*add_number)*1.07, self.hero.get_updated_statistic(1))
 
