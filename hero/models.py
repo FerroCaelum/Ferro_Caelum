@@ -116,24 +116,52 @@ class Hero(Owner):
             return stat
     
     def get_updated_power(self):
+        """Metoda zwracająca wartość mocy bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(1)
+    
     def get_updated_resistance(self):
+        """Metoda zwracająca wartość wytrzymałości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(2)
     def get_updated_dexterity(self):
+        """Metoda zwracająca wartość sprawności bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(3)
+    
     def get_updated_perception(self):
+        """Metoda zwracająca wartość percepcji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(4)
+    
     def get_updated_intelligence(self):
+        """Metoda zwracająca wartość inteligencji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(5)
+    
     def get_updated_web(self):
+        """Metoda zwracająca wartość sieci bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(6)
+    
     def get_updated_artifice(self):
+        """Metoda zwracająca wartość zaradności bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(7)
+    
     def get_updated_hp(self):
+        """Metoda zwracająca ilość punktów życia bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(8)
+    
     def get_updated_ap(self):
+        """Metoda zwracająca wartość punktów akcji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(9)
+    
     def get_updated_speed(self):
+        """Metoda zwracająca wartość szybkości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
+        oddziałujących."""
         return self.get_updated_statistic(10)
     
     def __unicode__(self):
