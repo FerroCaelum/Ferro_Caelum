@@ -62,5 +62,11 @@ class HeroUpdateStatistics(TestCase):
             talent.effects.create(value = 3, variable = 1, percent = True, where_works = 1)
             talent.effects.create(value = 4, variable = 1, percent = True, where_works = 1)
             self.hero.talents.add(talent)
-        self.assertEqual((self.hero.power + 3*add_number)*1.07, self.hero.get_updated_statistic(1))
+        self.assertEqual((self.hero.power + 3*add_number)*1.7, self.hero.get_updated_statistic(1))
+		
+	def test_min_border(self):
+		self.hero.talents.all()[0].effects.create(value = -self.hero.power, variable = 1, percent = False, where_works = 1)
+		self.assertEqual(1, self.hero.get_updated_statistic(1))
+        
+
 

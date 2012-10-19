@@ -57,7 +57,7 @@ class Hero(Owner):
     antivirus_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #obrona antywirusowa
     dodge = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #uniki
     quick_move = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #szybkie poruszanie się
-    #>Umiejętności
+    #>Umiejętności[MinValueValidator(0.0)], default=0.0
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
@@ -88,6 +88,7 @@ class Hero(Owner):
     def get_updated_statistic(self, number):
         """Metoda zwracająca wartość statystyki o danym numerze z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących. UWAGA: metoda niekompletna - uwzględnia efekty pochodzące jedynie od talentów"""
+        if number > 10: raise u'Statystyka nieobsługiwana.'
         tes = set() #Zbiór wszystkich efektów addytywnych wpływajacych na daną statystykę,
                       # pobrana ze wszystkich talentów bohatera
         tem = set() #Zbiór wszystkich efektów multiplikatywnych wpływajacych na daną statystykę,
@@ -111,7 +112,11 @@ class Hero(Owner):
                 
         stat = self.get_statistic(number)       
         if stat:
-            return 0.01*m*(stat+s)   
+			up_stats = 0.01*m*(stat+s)
+			if up_stats<1:
+				return 1
+			else:
+				return up_stats
         else: 
             return stat
     
@@ -163,6 +168,6 @@ class Hero(Owner):
         """Metoda zwracająca wartość szybkości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących."""
         return self.get_updated_statistic(10)
-    
+	
     def __unicode__(self):
         return self.name
