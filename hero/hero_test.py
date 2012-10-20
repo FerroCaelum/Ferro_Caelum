@@ -6,6 +6,7 @@ import unittest
 
 class TestCase(unittest.TestCase):
     def setUp(self):
+        Hero.objects.all().delete()
         self.h1 = Hero(name=u'Książę Karol')
         self.h2 = Hero(name=u'Królowa Karolina')
         self.h1.save()
@@ -14,8 +15,8 @@ class TestCase(unittest.TestCase):
         reka = ItemPlace(name=u'prawa ręka')
         reka.save()
 
-        cos = Item.objects.all()
-        self.sword = Item(u'Srebrny Miecz', reka)
+        self.sword = Item(name=u'Srebrny Miecz', location=reka, min_lvl=0)
+        all = Item.objects.all().delete()
         self.sword.save()
         self.sword.spawn(1, self.h1).save()
 
