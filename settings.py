@@ -16,7 +16,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ferro_caelum',
+        'NAME': os.path.join(ROOT_PATH, 'ferro_caelum.sqlite')
         #        'USER': 'pluszak',
         #        'PASSWORD': 'lubie zielone krasnoludy',
         #        'HOST': '/var/run/mysql',
