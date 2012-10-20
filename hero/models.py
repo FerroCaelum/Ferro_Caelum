@@ -84,6 +84,9 @@ class Hero(Owner):
             return self.ap
         if number == 10: 
             return self.speed
+        if number == 14:
+            return self.lvl
+        raise u"Statystyka nie obsługiwana przez metodę"
         
     def get_updated_statistic(self, number):
         """Metoda zwracająca wartość statystyki o danym numerze z ulepszeniami wynikającymi z wszelkich efektów na nią
@@ -168,6 +171,53 @@ class Hero(Owner):
         """Metoda zwracająca wartość szybkości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących."""
         return self.get_updated_statistic(10)
+    
+    def have_talent(self, talent):
+        """Metoda sprawdzająca, czy bohater posiada dany talent"""
+        return True if self.talents.filter(pk__contains=talent.pk) else False
+    
+    def have_required_stat(self, number, value):
+        if number == 1: 
+            return self.power >= value
+        if number == 2: 
+            return self.resistance >= value
+        if number == 3: 
+            return self.dexterity >= value
+        if number == 4: 
+            return self.perception >= value
+        if number == 5: 
+            return self.intelligence >= value
+        if number == 6: 
+            return self.web >= value
+        if number == 7: 
+            return self.artifice >= value
+        if number == 8: 
+            return self.hp >= value
+        if number == 9: 
+            return self.ap >= value
+        if number == 10: 
+            return self.speed >= value
+        if number == 14:
+            return self.lvl
+        raise u"Statystyka nie obsługiwana przez metodę"
+    
+    def meets_stats_requirements(self, talent):
+        pass
+    
+    def meets_talents_requiraments(self, talent):
+        pass
+    
+    def meets_bloodline_requirament(self,talent):
+        requirement = talent.blood_line_requirement
+        return True if (not requirement) or self.blood_line == requirement else False
+            
+    def can_pick_talent(self, talent):
+        """Metoda sprawdzająca, czy bohater może wybrać dany talent"""
+        if self.meets_bloodline_requirament(talent):
+            if self.meets_talents_requiraments(talent):
+                if self.meets_stats_requirements(talent):
+                    return True
+        return False    
 	
     def __unicode__(self):
         return self.name
