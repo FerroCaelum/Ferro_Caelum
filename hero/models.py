@@ -6,11 +6,16 @@ from blood_line.models import BloodLine
 from profession.models import Profession
 from talent.models import Talent
 
+class Stat(models.Model):
+    name = models.CharField(max_length=50)
+    value = models.BigIntegerField(default=0)
+
+
 class Owner(models.Model):
     name = models.CharField(max_length=50)
 
-    max_load = models.DecimalField(max_digits=10, decimal_places=2, default=80)
-    load = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    max_load = models.ForeignKey(Stat)
+    load = models.ForeignKey(Stat)
 
     def give(self, item, new_owner, count):
         """
@@ -40,11 +45,6 @@ class Owner(models.Model):
 
     def __unicode__(self):
         return u'%s' % self.name
-
-
-class Stat(models.Model):
-    name = models.CharField(max_length=50)
-    value = models.BigIntegerField(default=0)
 
 
 class Hero(Owner):
