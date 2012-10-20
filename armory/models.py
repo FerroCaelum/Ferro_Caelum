@@ -7,12 +7,6 @@ class ItemPlace(models.Model):
 
 
 class Item(models.Model):
-#    def __init__(self, name, location, load=1, min_lvl=0):
-#        models.Model.__init__(self)
-#        self.name=name
-#        self.location=location
-#        self.load=load
-#        self.min_lvl=min_lvl
     name = models.CharField(max_length=50, unique=True)
     load = models.DecimalField(max_digits=16, decimal_places=5, default=0)
     location = models.ForeignKey(ItemPlace, null=True, blank=True,
@@ -41,17 +35,10 @@ class ItemInstance(models.Model):
     """
     Faktyczny, użyteczny w grze item.
     """
-
-    def __init__(self, item, count, owner):
-        models.Model.__init__(self)
-        self.owner = owner
-        self.item = item
-        self._count = count
-
     item = models.ForeignKey(Item)
     owner = models.ForeignKey(Owner)
     equipped = models.BooleanField(default=False)
-    _count = models.IntegerField()
+    _count = models.IntegerField(default=1)
 
     @property
     def count(self):

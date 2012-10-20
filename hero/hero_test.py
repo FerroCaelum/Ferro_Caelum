@@ -1,6 +1,6 @@
 # coding: utf-8
 from armory.models import Item, ItemInstance, ItemPlace
-from hero.models import Hero, Owner
+from hero.models import Hero
 
 import unittest
 
