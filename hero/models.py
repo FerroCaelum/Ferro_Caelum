@@ -24,7 +24,6 @@ class Owner(models.Model):
         :returns: przekazane item'y
         :rtype: Items
         """
-
         assert item is armory.models.Item
         assert new_owner is Owner
         assert count is int
@@ -44,17 +43,22 @@ class Owner(models.Model):
         return u'%s' % self.name
 
 
+class Stat(models.Model):
+    name = models.CharField(max_length=50)
+    value = models.BigIntegerField(default=0)
+
+
 class Hero(Owner):
     lvl = models.PositiveIntegerField(default=1)
     lvl_points = models.PositiveIntegerField(default=100)
     blood_line = models.ForeignKey(BloodLine, null=True)
     profession = models.ForeignKey(Profession, null=True)
     experience = models.PositiveIntegerField(default=0)
-    energy = models.PositiveIntegerField(default=20)
-    energy_regeneration = models.PositiveIntegerField(default=20)
-    gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
+    #gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
     talent = models.ManyToManyField(Talent, null=True)
     #atrybuty
+    energy = models.PositiveIntegerField(default=20)
+    energy_regeneration = models.PositiveIntegerField(default=20)
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
     dexterity = models.PositiveIntegerField(default=1) #sprawność
@@ -70,8 +74,6 @@ class Hero(Owner):
     detection = models.PositiveIntegerField(default=0) #detekcja
     hide = models.PositiveIntegerField(default=0) #kamuflaż
     trade = models.PositiveIntegerField(default=0) #handel
-    #wyćwiczenie (doświadczenie)
-    #>Bojowe
     melee_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
         default=0.0) #atak wręcz
     range_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
@@ -86,7 +88,6 @@ class Hero(Owner):
         default=0.0) #uniki
     quick_move = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
         default=0.0) #szybkie poruszanie się
-    #>Umiejętności
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
         default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
@@ -94,9 +95,27 @@ class Hero(Owner):
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
         default=0.0) #handlowanie
 
-    def equip(self, itemInstance):
-        pass
+    def equip(self, itemInstance, location):
+        """Zakłada item"""
+        assert itemInstance is armory.models.ItemInstance
+        assert location is armory.models.ItemSlot
 
+        if itemInstance.owner != self:
+            raise Exception(u'Cannot equip not ur item.')
+        if itemInstance.location is not None:
+            raise Exception(u'Item already equipped.')
+        if self.lvl < itemInstance.item.min_lvl:
+            raise Exception(u'Ur too low lvl to equip this item.')
+        itemInstance.location = location
+        itemInstance.save()
+
+    def take_off(self, itemInstance):
+        """Zdejmuje item"""
+        assert itemInstance is armory.models.ItemInstance
+        if itemInstance.owner != self:
+            raise Exception(u'Cannot take off not ur item.')
+        itemInstance.location = None
+        itemInstance.save()
 
     def __unicode__(self):
         return self.name
