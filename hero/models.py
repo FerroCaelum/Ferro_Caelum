@@ -1,7 +1,6 @@
 # coding: utf-8
 
 from django.db import models
-from django.core.validators import MinValueValidator
 import armory.models
 from blood_line.models import BloodLine
 from profession.models import Profession
@@ -54,46 +53,35 @@ class Hero(Owner):
     blood_line = models.ForeignKey(BloodLine, null=True)
     profession = models.ForeignKey(Profession, null=True)
     experience = models.PositiveIntegerField(default=0)
-    #gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
     talent = models.ManyToManyField(Talent, null=True)
     #atrybuty
-    energy = models.PositiveIntegerField(default=20)
-    energy_regeneration = models.PositiveIntegerField(default=20)
-    power = models.PositiveIntegerField(default=1) #moc
-    resistance = models.PositiveIntegerField(default=1) #wytrzymałość
-    dexterity = models.PositiveIntegerField(default=1) #sprawność
-    perception = models.PositiveIntegerField(default=1) #percepcja
-    intelligence = models.PositiveIntegerField(default=1) #inteligencja
-    web = models.PositiveIntegerField(default=1) #sieć
-    artifice = models.PositiveIntegerField(default=1) #spryt
+    energy = models.ForeignKey(Stat)
+    energy_regeneration = models.ForeignKey(Stat)
+    power = models.ForeignKey(Stat) #moc
+    resistance = models.ForeignKey(Stat) #wytrzymałość
+    dexterity = models.ForeignKey(Stat) #sprawność
+    perception = models.ForeignKey(Stat) #percepcja
+    intelligence = models.ForeignKey(Stat) #inteligencja
+    web = models.ForeignKey(Stat) #sieć
+    artifice = models.ForeignKey(Stat) #spryt
     #statystyki główne
-    hp = models.PositiveIntegerField(default=10) #punkty życia
-    ap = models.PositiveIntegerField(default=100) #punkty akcji
-    speed = models.PositiveIntegerField(default=100) #prędkość
+    hp = models.ForeignKey(Stat) #punkty życia
+    ap = models.ForeignKey(Stat) #punkty akcji
+    speed = models.ForeignKey(Stat) #prędkość
     #umiejętności
-    detection = models.PositiveIntegerField(default=0) #detekcja
-    hide = models.PositiveIntegerField(default=0) #kamuflaż
-    trade = models.PositiveIntegerField(default=0) #handel
-    melee_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #atak wręcz
-    range_attack = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #atak dystansowy
-    programming = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #programowanie
-    web_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #używanie sieci
-    antivirus_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #obrona antywirusowa
-    dodge = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #uniki
-    quick_move = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #szybkie poruszanie się
-    detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #wykrywanie
-    hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #ukrywanie się
-    trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)],
-        default=0.0) #handlowanie
+    detection = models.ForeignKey(Stat) #detekcja
+    hide = models.ForeignKey(Stat) #kamuflaż
+    trade = models.ForeignKey(Stat) #handel
+    melee_attack = models.ForeignKey(Stat) #atak wręcz
+    range_attack = models.ForeignKey(Stat) #atak dystansowy
+    programming = models.ForeignKey(Stat) #programowanie
+    web_use = models.ForeignKey(Stat) #używanie sieci
+    antivirus_use = models.ForeignKey(Stat) #obrona antywirusowa
+    dodge = models.ForeignKey(Stat) #uniki
+    quick_move = models.ForeignKey(Stat) #szybkie poruszanie się
+    detection_use = models.ForeignKey(Stat) #wykrywanie
+    hide_use = models.ForeignKey(Stat) #ukrywanie się
+    trade_use = models.ForeignKey(Stat) #handlowanie
 
     def equip(self, itemInstance, location):
         """Zakłada item"""
@@ -112,6 +100,7 @@ class Hero(Owner):
     def take_off(self, itemInstance):
         """Zdejmuje item"""
         assert itemInstance is armory.models.ItemInstance
+
         if itemInstance.owner != self:
             raise Exception(u'Cannot take off not ur item.')
         itemInstance.location = None
