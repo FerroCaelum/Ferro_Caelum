@@ -8,19 +8,19 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+# ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'ferro_caelum',
-        'USER': 'pluszak',
-        'PASSWORD': 'lubie zielone krasnoludy',
-        'HOST': '/var/run/mysql',
-        'PORT': '',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(ROOT_PATH, 'ferro_caelum.sqlite')
+        #        'USER': 'pluszak',
+        #        'PASSWORD': 'lubie zielone krasnoludy',
+        #        'HOST': '/var/run/mysql',
+        #        'PORT': '',
     }
 }
 
@@ -164,6 +164,6 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
-        }
+        },
+    }
 }

@@ -1,5 +1,5 @@
 # coding: utf-8
-from armory.models import BaseItem
+from armory.models import Item
 
 __author__ = 'episage'
 
@@ -9,7 +9,7 @@ import datetime
 
 class AuctionHouse(Owner):
     def put_up(self, ii, min_price, valid_from, valid_to):
-        if not valid_from < valid_to < datetime.datetime.now(): raise u"err"
+        if not valid_from < valid_to < datetime.datetime.now(): raise Exception(u"err")
         if min_price < 0: return u"Minimal price must be greater or equal to zero."
         if not ii.owner == self:
             ii.owner = self
@@ -25,7 +25,7 @@ class AuctionHouse(Owner):
 
 
 class AuctionItem(models.Model):
-    item = models.OneToOneField(BaseItem)
+    item = models.OneToOneField(Item)
     description = models.TextField()
     min_price = models.PositiveIntegerField()
     valid_from = models.DateTimeField()

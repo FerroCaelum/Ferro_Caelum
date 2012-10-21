@@ -2,96 +2,87 @@
 from django.db import models
 from hero.models import Owner
 
-__author__ = 'episage'
+class ItemPlace(models.Model):
+    name = models.CharField(max_length=50)
 
-class BaseItem(models.Model):
-    """
-    Abstrakcyjna klasa, podstawa do tworzenia itemów.
 
-    Nie wolno tworzyć instancji tej klasy.
-    """
-
+class Item(models.Model):
     name = models.CharField(max_length=50, unique=True)
+    load = models.DecimalField(max_digits=16, decimal_places=5, default=0)
+    location = models.ForeignKey(ItemPlace, null=True, blank=True,
+        default=None) # plecak, prawa ręka, lewa ręka, buty, etc.
+    min_lvl = models.PositiveIntegerField()
 
-    weight = models.DecimalField(max_digits=16, decimal_places=5, default=0)
-
-    #    icon =models.ImageField()
-    #
-    #    stackable=models.BooleanField(default=True)
-    #
-    #    sellable=models.BooleanField(default=True)
-    #
-    #    droppable=models.BooleanField(default=True)
-    #
-    #    destroyable=models.BooleanField(default=True)
-    #
-    #    tradeable=models.BooleanField(default=True)
-    #
-    #    depositable=models.BooleanField(default=True)
-
+    #icon = models.ImageField()
+    sellable = models.BooleanField(default=True)
+    destroyable = models.BooleanField(default=True)
+    tradeable = models.BooleanField(default=True)
+    enchantable = models.BooleanField(default=True)
 
     def spawn(self, count, owner):
         """
-        Tworzy nowy item.
+        Tworzy nowy item z powietrza.
         """
-        return Items(item=self, owner=owner, count=count)
+        if count <= 0: raise Exception(u'Cannot spawn less then 1 items.')
+
+        return ItemInstance(item=self, count=count, owner=owner)
 
     def __unicode__(self):
         return u'%s' % self.name
 
 
-class Items(models.Model):
+class ItemInstance(models.Model):
     """
     Faktyczny, użyteczny w grze item.
     """
-
-    base_item = models.ForeignKey(BaseItem)
-
+    item = models.ForeignKey(Item)
     owner = models.ForeignKey(Owner)
+    equipped = models.BooleanField(default=False)
+    _count = models.IntegerField(default=1)
 
-    count = models.PositiveIntegerField()
+    @property
+    def count(self):
+        return self._count
 
-    def give(self, new_owner, count=count):
-        """
-        Przekazuje item nowemu właścicielowi.
+    @count.setter
+    def count(self, value):
+        if value < 0: raise Exception(u'Negative count? Really?')
+        itemLoad = self.item.load
+        newLoad = self.owner.load + (itemLoad *
+                                     self.count -
+                                     itemLoad *
+                                     value)
+        if newLoad > self.owner.max_load:
+            raise Exception(u'Item is too heavy.')
+        if newLoad < 0:
+            raise Exception(u'Load < 0')
 
-        :param new_owner: komu przekazać item'y
-        :type new_owner: hero.Owner
-        :param count: ilość
-        :type count: int
-        :returns: przekazane item'y
-        :rtype: Items
-        """
-        if count > self.count:
-            raise u'You can not give more than you have.'
-        if count == self.count:
-            self.owner = new_owner
-            return self
-        if count < self.count:
-            new_owner_items = Items.objects.filter(owner=new_owner, base_item=self.base_item)[:1]
-            self.count -= count
-            self.save()
-            if new_owner_items.count() == 1:
-                old_items = new_owner_items[0]
-                old_items.count += count
-                old_items.save()
-                return old_items
-            else:
-                new_items = Items(item=self.base_item, owner=new_owner, count=count)
-                new_items.save()
-                return new_items
+        if value == 0:
+            self.delete()
+        else:
+            self._count = value
+        self.owner.load = newLoad
 
-        raise u"Error occured."
+    def destroy(self):
+        self.delete()
+
+    def equip(self):
+        if self.item.location == None: raise Exception(u'Item not equipable')
+        self.equipped = True
+
+
+    def give(self):
+        pass
 
     def __unicode__(self):
-        return u'%s[%s]' % (self.base_item, self.count)
+        return u'%s[%s]' % (self.item, self.count)
 
 
-class Money(BaseItem):
+class Money(Item):
     pass
 
 
-class Weapon(BaseItem):
+class Weapon(Item):
     speed = models.PositiveIntegerField()
     hit_bonus = models.IntegerField()
     piercing_dmg = models.IntegerField()
@@ -99,7 +90,7 @@ class Weapon(BaseItem):
     critical = models.IntegerField()
 
 
-class Armature(BaseItem):
+class Armature(Item):
     speed_mod = models.PositiveIntegerField()
     energy_def = models.PositiveIntegerField()
     piercing_def = models.PositiveIntegerField()
@@ -107,7 +98,7 @@ class Armature(BaseItem):
     camouflage = models.PositiveIntegerField()
 
 
-class Helmet(BaseItem):
+class Helmet(Item):
     energy_def = models.PositiveIntegerField()
     piercing_def = models.PositiveIntegerField()
     strike_def = models.PositiveIntegerField()
@@ -115,14 +106,14 @@ class Helmet(BaseItem):
     programs_def = models.PositiveIntegerField()
 
 
-class Program(BaseItem):
+class Program(Item):
     speed = models.PositiveIntegerField()
     pool = models.PositiveIntegerField()
     type = models.PositiveIntegerField()
     duration = models.FloatField() # timedelta
 
 
-class FieldTech(BaseItem):
+class FieldTech(Item):
     speed = models.PositiveIntegerField()
     pool = models.PositiveIntegerField()
     energy_def = models.PositiveIntegerField()
@@ -132,7 +123,7 @@ class FieldTech(BaseItem):
     count = models.PositiveIntegerField()
 
 
-class WebTech(BaseItem):
+class WebTech(Item):
     speed = models.PositiveIntegerField()
     pool = models.PositiveIntegerField()
     energy_dmg = models.PositiveIntegerField()
@@ -142,4 +133,4 @@ class WebTech(BaseItem):
 
 
 class SpecialProperties(models.Model):
-    item = models.ForeignKey(BaseItem)
+    item = models.ForeignKey(ItemInstance)
