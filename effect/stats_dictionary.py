@@ -9,7 +9,7 @@ def get_stats_name(number, where):
         elif number==3:
             str=u'sprawność'
         elif number==4:
-            str=u'percepcja'
+            str=u'perception'
         elif number==5:
             str=u'inteligencja'
         elif number==6:
