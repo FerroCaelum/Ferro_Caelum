@@ -1,34 +1,21 @@
 __author__ = 'Mati'
 from django.db import models
 from hero.models import Hero
-class Battle(models.Model):
-    hero_uno = models.ForeignKey(Her)
-    hero_dos = models.ForeignKey(Her)
 
-    """
-    Wszystkie możliwe akcje do wykonania podczas walki, h1 - ten co wykonuje, h2 - na kogo wykonuje
-    """
-
-    def close_attack(self,h1,h2):
-        return "later"
-
-    def distance_attack(self,h1,h2):
-        return "later"
-
-    def get_closer(self,h1,h2):
-        return "later"
-
-    def throw_virus(self,h1,h2):
-        return "later"
-
-    def throw_programm(self,h1,h2):
-        return "later"
-
-    def activate_field(self,h1):
-        return "later"
-
-    def web_attack(self,h1,h2):
-        return "later"
-
-    def abort(self,h1):
-        return "later"
+class Battle_Log(models.Model):
+    hero_id_uno = models.ForeignKey(Hero)           #Bohater atakujący
+    hero_id_dos = models.ForeignKey(Hero)           #Bohater atakowany
+    hero_hp_uno = models.PositiveIntegerField               #Ilosc hp w %
+    hero_hp_dos = models.PositiveIntegerField
+    hero_ap = models.PositiveIntegerField                   #Punkty Akcji
+    hero_used_programs = models.PositiveIntegerField        #Ilosc wylaczonych programow/wirusow
+    hero_obtained_programs = models.PositiveIntegerField    #Ilosc programow/wirusow rzuconych na atakujacego
+    hero_lvl_uno = models.PositiveIntegerField
+    hero_lvl_dos = models.PositiveIntegerField
+    distance = models.PositiveIntegerField
+    hero_has_field_uno = models.BooleanField        #Czy atakujacy ma rzucone pole
+    hero_has_field_dos = models.BooleanField
+    type_of_enemy = models.DecimalField             #Typ przeciwnika
+    last_loosed_hp = models.PositiveIntegerField            #Ostatnio stracone hp przez atakujacego
+    def __unicode__(self):
+        return self.name
