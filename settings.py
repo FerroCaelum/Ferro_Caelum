@@ -8,7 +8,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+# ('Your Name', 'your_email@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -16,12 +16,12 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'ferro_caelum.sqlite',
-        'USER': 'admin',
-        'PASSWORD': 'admin',
-        'HOST': '',
-        'PORT': '',
-        }
+        'NAME': os.path.join(ROOT_PATH, 'ferro_caelum.sqlite')
+        #        'USER': 'pluszak',
+        #        'PASSWORD': 'lubie zielone krasnoludy',
+        #        'HOST': '/var/run/mysql',
+        #        'PORT': '',
+    }
 }
 
 # Local time zone for this installation. Choices can be found here:
@@ -164,6 +164,6 @@ LOGGING = {
             'handlers': ['mail_admins'],
             'level': 'ERROR',
             'propagate': True,
-            },
-        }
+        },
+    }
 }
