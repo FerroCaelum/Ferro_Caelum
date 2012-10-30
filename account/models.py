@@ -12,7 +12,9 @@ class Account(models.Model):
     Postać ma inną nazwę, która jest w modelu Hero.
     """
     user = models.OneToOneField(User)
-    hero = models.OneToOneField(Hero)
+
+    #Tymczasowy fix, przechodzi testy. W oczekiwaniu na tworzenie bohatera, jak należy.
+    hero = models.ManyToManyField(Hero)
 
     def __unicode__(self):
         return u'Profile of %s' % self.user.username
@@ -20,7 +22,7 @@ class Account(models.Model):
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
+        Account.objects.create(user=instance)
 
 # to jest w dobrym miejscu? \/
 post_save.connect(create_user_profile, sender=User)
