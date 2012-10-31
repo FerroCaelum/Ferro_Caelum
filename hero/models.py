@@ -1,8 +1,10 @@
 # coding: utf-8
+import random
+from symbol import power
 
 from django.db import models
 from django.core.validators import MinValueValidator
-import armory.models
+from armory import models
 from blood_line.models import BloodLine
 from profession.models import Profession
 from talent.models import Talent
@@ -59,7 +61,7 @@ class Hero(Owner):
     #atrybuty
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
-    dexterity = models.PositiveIntegerField(default=1) #sprawność
+    dexternity = models.PositiveIntegerField(default=1) #sprawność
     perception = models.PositiveIntegerField(default=1) #percepcja
     intelligence = models.PositiveIntegerField(default=1) #inteligencja
     web = models.PositiveIntegerField(default=1) #sieć
@@ -87,8 +89,20 @@ class Hero(Owner):
     #>Umiejętności[MinValueValidator(0.0)], default=0.0
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
-    trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
-    
+    trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie
+
+
+    #statystyki bojowe - nie ogarniam, czy wyjdzie, wiec pisze w dwoch miejscach
+    health_points = hp + resistance * 2
+    #Staystyki nieobsługiwana przez getter:
+    virus_resist = antyvirus_use + 0.5 * resistance + 0.5 * intelligence
+    hiding = hide_use + dexternity # + kamuflarz ?
+    detection = detection_use + perception # + detektor ?
+    movement_speed = quick_move + 0.5 * power
+    #Trzeba nad tym podyskutować
+    weapon_switching_speed_uno = 90001
+    #koniec statystyk bojowych
+
     def get_statistic(self, number):
         """Metoda zwracająca wartość statystyki o podanym numerze. UWAGA: metoda niekompletna"""
         if number == 1: 
@@ -96,7 +110,7 @@ class Hero(Owner):
         if number == 2: 
             return self.resistance
         if number == 3: 
-            return self.dexterity
+            return self.dexternity
         if number == 4: 
             return self.perception
         if number == 5: 
@@ -159,7 +173,7 @@ class Hero(Owner):
         """Metoda zwracająca wartość wytrzymałości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących."""
         return self.get_updated_statistic(2)
-    def get_updated_dexterity(self):
+    def get_updated_dexternity(self):
         """Metoda zwracająca wartość sprawności bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących."""
         return self.get_updated_statistic(3)
@@ -209,7 +223,7 @@ class Hero(Owner):
         if number == 2: 
             return self.resistance >= value
         if number == 3: 
-            return self.dexterity >= value
+            return self.dexternity >= value
         if number == 4: 
             return self.perception >= value
         if number == 5: 

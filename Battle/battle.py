@@ -12,26 +12,7 @@ class Battle :
             init_battle()
 
         def init_battle(self):
-            self.distance = random.randrange(1000,100001)
-            self.hp_uno = hero1.get_statistic(8) * hero1.get_statistic(2) * 2
-            self.ap_uno = hero1.get_statistic(9)
-            #statystyki nieobsługiwana przez getter:
-            self.virus_resist_uno = hero1.get_statistic(antyvirus_use) + 0.5 * hero1.get_statistic(2) + 0.5 * hero1.get_statistic(5)
-            self.hiding_uno = hero1.get_statistic(hide_use) + hero1.get_statistic(3) # + kamuflarz ?
-            self.detection_uno = hero1.get_statistic(detection_use) + hero1.get_statistic(4) # + detektor ?
-            self.movement_speed_uno = hero1.get_statistic(quick_move) + 0.5 * hero1.get_statistic(1)
-            #trzeba nad tym podyskutować
-            self.weapon_switching_speed_uno = 90001
-
-            self.hp_dos = hero2.get_statistic(8) * hero2.get_statistic(2) * 2
-            self.ap_dos = hero2.get_statistic(9)
-            #statystyki nieobsługiwana przez getter:
-            self.virus_resist_dos = hero2.get_statistic(antyvirus_use) + 0.5 * hero2.get_statistic(2) + 0.5 * hero2.get_statistic(5)
-            self.hiding_dos = hero2.get_statistic(hide_use) + hero2.get_statistic(3) # + kamuflaz ?
-            self.detection_dos = hero2.get_statistic(detection_use) + hero2.get_statistic(4) # +detektor ?
-            self.movement_speed_dos = hero2.get_statistic(quick_move) + 0.5 * hero2.get_statistic(1)
-            #trzeba nad tym podyskutować
-            self.weapon_switching_speed_dos = 90001
+            distance = random.randrange(1000,100001)
             init_equipment()
 
         def init_equipment(self):
