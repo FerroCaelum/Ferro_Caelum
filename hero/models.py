@@ -56,7 +56,7 @@ class Hero(Owner):
     gold = models.DecimalField(max_digits=20, decimal_places=2, default=0.0) #stan konta
     talents = models.ManyToManyField(Talent, null=True)
 
-    #atrybuty
+    #atrybuty aktualne
     power = models.PositiveIntegerField(default=1) #moc
     resistance = models.PositiveIntegerField(default=1) #wytrzymałość
     dexterity = models.PositiveIntegerField(default=1) #sprawność
@@ -84,120 +84,37 @@ class Hero(Owner):
     antivirus_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #obrona antywirusowa
     dodge = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #uniki
     quick_move = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #szybkie poruszanie się
-    #>Umiejętności[MinValueValidator(0.0)], default=0.0
+    #>Umiejętności
     detection_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #wykrywanie
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
     
-    def get_statistic(self, number):
-        """Metoda zwracająca wartość statystyki o podanym numerze. UWAGA: metoda niekompletna"""
-        if number == 1: 
-            return self.power
-        if number == 2: 
-            return self.resistance
-        if number == 3: 
-            return self.dexterity
-        if number == 4: 
-            return self.perception
-        if number == 5: 
-            return self.intelligence
-        if number == 6: 
-            return self.web
-        if number == 7: 
-            return self.artifice
-        if number == 8: 
-            return self.hp
-        if number == 9: 
-            return self.ap
-        if number == 10: 
-            return self.speed
-        if number == 14:
-            return self.lvl
-        raise u"Statystyka nie obsługiwana przez metodę"
-        
-    def get_updated_statistic(self, number):
-        """Metoda zwracająca wartość statystyki o danym numerze z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących. UWAGA: metoda niekompletna - uwzględnia efekty pochodzące jedynie od talentów"""
-        if number > 10: raise u'Statystyka nieobsługiwana.'
-        tes = set() #Zbiór wszystkich efektów addytywnych wpływajacych na daną statystykę,
-                      # pobrana ze wszystkich talentów bohatera
-        tem = set() #Zbiór wszystkich efektów multiplikatywnych wpływajacych na daną statystykę,
-                      # pobrana ze wszystkich talentów bohatera
-        s = 0
-        m = 100
-        talents = self.talents.all()
-            
-        for t in talents:
-            tes.add(t.effects.filter(where_works = number).filter(variable = number).filter(percent = False))
-        for t in talents:
-            tes.add(t.effects.filter(where_works = number).filter(variable = number).filter(percent = True))
-            
-        for effects_set in tes:
-            for e in effects_set:
-                s += e.value   
-            
-        for effects_set in tem:
-            for e in effects_set:
-                m += e.value   
-                
-        stat = self.get_statistic(number)       
-        if stat:
-            up_stats = 0.01*m*(stat+s)
-            if up_stats<1:
-                return 1
-            else:
-                return up_stats
-        else: 
-            return stat
+    #atrybuty bazowe
+    power_base = models.PositiveIntegerField(default=1) #moc
+    resistance_base = models.PositiveIntegerField(default=1) #wytrzymałość
+    dexterity_base = models.PositiveIntegerField(default=1) #sprawność
+    perception_base = models.PositiveIntegerField(default=1) #percepcja
+    intelligence_base = models.PositiveIntegerField(default=1) #inteligencja
+    web_base = models.PositiveIntegerField(default=1) #sieć
+    artifice_base = models.PositiveIntegerField(default=1) #spryt
     
-    def get_updated_power(self):
-        """Metoda zwracająca wartość mocy bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(1)
+    #Addytywne premie do atrybutów
+    power_additive = models.PositiveIntegerField(default=1) #moc
+    resistance_additive = models.PositiveIntegerField(default=1) #wytrzymałość
+    dexterity_additive = models.PositiveIntegerField(default=1) #sprawność
+    perception_additive = models.PositiveIntegerField(default=1) #percepcja
+    intelligence_additive = models.PositiveIntegerField(default=1) #inteligencja
+    web_additive = models.PositiveIntegerField(default=1) #sieć
+    artifice_additive = models.PositiveIntegerField(default=1) #spryt
     
-    def get_updated_resistance(self):
-        """Metoda zwracająca wartość wytrzymałości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(2)
-    def get_updated_dexterity(self):
-        """Metoda zwracająca wartość sprawności bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(3)
-    
-    def get_updated_perception(self):
-        """Metoda zwracająca wartość percepcji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(4)
-    
-    def get_updated_intelligence(self):
-        """Metoda zwracająca wartość inteligencji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(5)
-    
-    def get_updated_web(self):
-        """Metoda zwracająca wartość sieci bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(6)
-    
-    def get_updated_artifice(self):
-        """Metoda zwracająca wartość zaradności bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(7)
-    
-    def get_updated_hp(self):
-        """Metoda zwracająca ilość punktów życia bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(8)
-    
-    def get_updated_ap(self):
-        """Metoda zwracająca wartość punktów akcji bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(9)
-    
-    def get_updated_speed(self):
-        """Metoda zwracająca wartość szybkości bohatera z ulepszeniami wynikającymi z wszelkich efektów na nią
-        oddziałujących."""
-        return self.get_updated_statistic(10)
+    #Procentower premie do atrybutów
+    power_percent = models.PositiveIntegerField(default=1) #moc
+    resistance_percent = models.PositiveIntegerField(default=1) #wytrzymałość
+    dexterity_percent = models.PositiveIntegerField(default=1) #sprawność
+    perception_percent = models.PositiveIntegerField(default=1) #percepcja
+    intelligence_percent = models.PositiveIntegerField(default=1) #inteligencja
+    web_percent = models.PositiveIntegerField(default=1) #sieć
+    artifice_percent = models.PositiveIntegerField(default=1) #spryt
     
     def have_talent(self, talent):
         """Metoda sprawdzająca, czy bohater posiada dany talent"""
@@ -205,34 +122,42 @@ class Hero(Owner):
     
     def have_required_stat(self, number, value):
         if number == 1: 
-            return self.power >= value
+            return self.power_base >= value
         if number == 2: 
-            return self.resistance >= value
+            return self.resistance_base >= value
         if number == 3: 
-            return self.dexterity >= value
+            return self.dexterity_base >= value
         if number == 4: 
-            return self.perception >= value
+            return self.perception_base >= value
         if number == 5: 
-            return self.intelligence >= value
+            return self.intelligence_base >= value
         if number == 6: 
-            return self.web >= value
+            return self.web_base >= value
         if number == 7: 
-            return self.artifice >= value
+            return self.artifice_base >= value
         if number == 8: 
-            return self.hp >= value
+            return self.hp_base >= value
         if number == 9: 
-            return self.ap >= value
+            return self.ap_base >= value
         if number == 10: 
-            return self.speed >= value
+            return self.speed_base >= value
         if number == 14:
             return self.lvl
-        raise u"Statystyka nie obsługiwana przez metodę"
-    
+        raise Exception(u"Statystyka nie obsługiwana przez metodę")
+
     def meets_stats_requirements(self, talent):
+        
         pass
     
     def meets_talents_requiraments(self, talent):
-        pass
+        requiraments=talent.talents_required.all()
+        for t in requiraments:
+            if not self.talents.filter(pk__contains=t.pk):
+                is_true = True
+                break
+        else:
+             is_true = False
+        return is_true
     
     def meets_bloodline_requirament(self,talent):
         requirement = talent.blood_line_requirement
@@ -240,10 +165,11 @@ class Hero(Owner):
             
     def can_pick_talent(self, talent):
         """Metoda sprawdzająca, czy bohater może wybrać dany talent"""
-        if self.meets_bloodline_requirament(talent):
-            if self.meets_talents_requiraments(talent):
-                if self.meets_stats_requirements(talent):
-                    return True
+        if not self.have_talent(talent):
+            if self.meets_bloodline_requirament(talent):
+                if self.meets_talents_requiraments(talent):
+                    if self.meets_stats_requirements(talent):
+                        return True
         return False    
     
     def __unicode__(self):
