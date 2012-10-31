@@ -103,6 +103,17 @@ class Hero(Owner):
     weapon_switching_speed_uno = 90001
     #koniec statystyk bojowych
 
+    #atrybuty wymagane w battle
+    programs = []
+    viruses = []
+    field = models.ForeignKey(Ability, null=true)
+    ability_stack = []
+    is_field_activate = false
+    current_ap = ap
+    current_hp = hp
+
+
+
     def get_statistic(self, number):
         """Metoda zwracająca wartość statystyki o podanym numerze. UWAGA: metoda niekompletna"""
         if number == 1: 
