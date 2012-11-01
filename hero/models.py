@@ -2,12 +2,11 @@
 
 from django.db import models
 from django.core.validators import MinValueValidator
-import armory.models
+
 from blood_line.models import BloodLine
 from profession.models import Profession
 from talent.models import Talent
-from effect.models import *
-  
+
 class Owner(models.Model):
     name = models.CharField(max_length=50)
 
@@ -314,3 +313,7 @@ class Hero(Owner):
     
     def __unicode__(self):
         return self.name
+
+import armory.models
+
+

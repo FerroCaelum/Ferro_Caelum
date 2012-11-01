@@ -1,6 +1,8 @@
 # coding: utf-8
 from django.db import models
+from hero import *
 from hero.models import Owner
+
 
 class ItemPlace(models.Model):
     name = models.CharField(max_length=50)
