@@ -115,61 +115,73 @@ class Hero(Owner):
     intelligence_percent = models.PositiveIntegerField(default=1) #inteligencja
     web_percent = models.PositiveIntegerField(default=1) #sieć
     artifice_percent = models.PositiveIntegerField(default=1) #spryt
-    
-    def have_talent(self, talent):
-        """Metoda sprawdzająca, czy bohater posiada dany talent"""
+             
+    def can_pick_talent(self, talent):
+        """Sprawdzająca, czy bohater może wybrać dany talent"""
+        if not self.has_talent(talent):
+            if self.has_required_bloodline_talent(talent.blood_line_requirement):
+                if self.has_required_talents_talent(talent):
+                    if self.has_required_stats_talent(talent):
+                        return True
+        return False    
+            
+    def has_talent(self, talent):
+        """Sprawdzająca, czy bohater posiada dany talent"""
         return True if self.talents.filter(id=talent.id) else False
+ 
+    def has_required_bloodline(self, blood_line):
+        """Sprawdza, czy bohater posiada wymaganą linię krwii (prawdziwe jeśli wprowadzony jest brak lini krwii)"""
+        return True if (not blood_line) or self.blood_line == blood_line else False
     
-    def have_required_stat(self, number, value):
-        if number == 1: 
+    def has_required_stat_value(self, variable, value):
+        """Sprawdza czy bohater posiada odpowiednią wartość atrybutu"""
+        if variable == 1: 
             return self.power_base >= value
-        if number == 2: 
+        if variable == 2: 
             return self.resistance_base >= value
-        if number == 3: 
+        if variable == 3: 
             return self.dexterity_base >= value
-        if number == 4: 
+        if variable == 4: 
             return self.perception_base >= value
-        if number == 5: 
+        if variable == 5: 
             return self.intelligence_base >= value
-        if number == 6: 
+        if variable == 6: 
             return self.web_base >= value
-        if number == 7: 
+        if variable == 7: 
             return self.artifice_base >= value
-        if number == 8: 
+        if variable == 8: 
             return self.hp_base >= value
-        if number == 9: 
+        if variable == 9: 
             return self.ap_base >= value
-        if number == 10: 
+        if variable == 10: 
             return self.speed_base >= value
-        if number == 14:
+        if variable == 14:
             return self.lvl
         raise Exception(u"Statystyka nie obsługiwana przez metodę")
 
-    def meets_stats_requirements(self, talent):
-        pass
+    def has_required_stats_talent(self, talent):
+        """Sprawdza, czy bohater posiada wymagane statystyki, do wzięcia talentu"""
+        if not talent.stats_requirements.all():
+            return True
+        requirements = talent.stats_requirements.all()
+        result = True
+        for requirement in requirements:
+            if not self.has_required_stat_value(requirement.variable, requirement.value):
+                break;
+        else:
+            return True
+        return False
     
-    def has_required_talents(self, talent):
+    def has_required_talents_talent(self, talent):
+        """Sprawdza, czy bohater ma wymagane talenty do wybrania danego talentu"""
         required_list = set(talent.talents_required.values_list('id', flat=True))
         hero_talents = set(self.hero.talents.values_list('id', flat=True))
         if required_list.issubset(hero_talents):
             return True
         return False
-    
-    def meets_bloodline_requirament(self,talent):
-        requirement = talent.blood_line_requirement
-        return True if (not requirement) or self.blood_line == requirement else False
-            
-    def can_pick_talent(self, talent):
-        """Metoda sprawdzająca, czy bohater może wybrać dany talent"""
-        if not self.have_talent(talent):
-            if self.meets_bloodline_requirament(talent):
-                if self.has_required_talents(talent):
-                    if self.meets_stats_requirements(talent):
-                        return True
-        return False    
-    
-    def __unicode__(self):
-        return self.name
 
     def equip(self, itemInstance):
         pass
+    
+    def __unicode__(self):
+        return self.name
