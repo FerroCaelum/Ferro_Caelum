@@ -6,7 +6,7 @@ from profession.models import Profession
 from hero.models import Hero
 from talent.models import *
 
-class HeroCanPickTalent(TestCase):
+class HeroTalent(TestCase):
     def setUp(self):
         self.malkavian = BloodLine(name="Malkavian", power=8, resistance=8, dexterity=8,
            perception=9, intelligence=10, web=10, artifice=1, hp=10, ap=100, speed=100, 

@@ -145,7 +145,103 @@ class Hero(Owner):
     intelligence_percent = models.PositiveIntegerField(default=1) #inteligencja
     web_percent = models.PositiveIntegerField(default=1) #sieć
     artifice_percent = models.PositiveIntegerField(default=1) #spryt
-             
+
+    STATS = {
+                1: "power",
+                2: "resistance",
+                3: "dexterity",
+                4: "perception",
+                5: "intelligence",
+                6: "web",
+                7: "artifice",
+                8: "hp",
+                9: "ap",
+                10: "speed",
+                11: "detection",
+                12: "hide",
+                13: "trade"
+                }
+
+    STATS_BASE = {
+                1: "power_base",
+                2: "resistance_base",
+                3: "dexterity_base",
+                4: "perception_base",
+                5: "intelligence_base",
+                6: "web_base",
+                7: "artifice_base",
+                8: "hp_base",
+                9: "ap_base",
+                10: "speed_base",
+                11: "detection_base",
+                12: "hide_base",
+                13: "trade_base"
+                }
+    
+    STATS_ADDITIVE = {
+                1: "power_additive",
+                2: "resistance_additive",
+                3: "dexterity_additive",
+                4: "perception_additive",
+                5: "intelligence_additive",
+                6: "web_additive",
+                7: "artifice_additive",
+                8: "hp_additive",
+                9: "ap_additive",
+                10: "speed_additive",
+                11: "detection_additive",
+                12: "hide_additive",
+                13: "trade_additive"
+                }
+        
+    STATS_PERCENT = {
+                1: "power_percent",
+                2: "resistance_percent",
+                3: "dexterity_percent",
+                4: "perception_percent",
+                5: "intelligence_percent",
+                6: "web_percent",
+                7: "artifice_percent",
+                8: "hp_percent",
+                9: "ap_percent",
+                10: "speed_percent",
+                11: "detection_percent",
+                12: "hide_percent",
+                13: "trade_percent"
+                }
+    
+    
+    def statistic_base(self, number):
+        return getattr(self, self.STATS_BASE[number])
+    
+    def statistic_additive(self, number, add=0):
+        value = getattr(self, self.STATS_ADDITIVE[number])
+        if add != 0:
+            setattr(self, self.STATS_ADDITIVE[number], value + add)
+            return value + add
+        return value
+    
+    def statistic_percent(self, number, add=0):
+        value = getattr(self, self.STATS_PERCENT[number])
+        if add != 0:
+            setattr(self, self.STATS_PERCENT[number], value + add)
+            return value + add
+        return value
+    
+    def statistic(self, number, new_value=None):
+        if set != None:
+            setattr(self, self.STATS[number], new_value)
+            return new_value
+        return getattr(self, self.STATS[number])
+     
+     
+    def give_talent(self, talent):
+        """Sprawdza, czy bohater spełnia wmagania talentu i jeśli tak to dodaje mu go. Zwraca True jeśli operacja jest udana i false jeśli bohater nie spełnia wymagań."""
+        if self.can_pick_talent(talent):
+            self.add_talent(talent)
+            return True
+        return False      
+            
     def can_pick_talent(self, talent):
         """Sprawdzająca, czy bohater może wybrać dany talent"""
         if not self.has_talent(talent):
@@ -178,35 +274,7 @@ class Hero(Owner):
     
     def has_required_stat_value(self, variable, value):
         """Sprawdza czy bohater posiada odpowiednią wartość atrybutu"""
-        if variable == 1: 
-            return self.power_base >= value
-        if variable == 2: 
-            return self.resistance_base >= value
-        if variable == 3: 
-            return self.dexterity_base >= value
-        if variable == 4: 
-            return self.perception_base >= value
-        if variable == 5: 
-            return self.intelligence_base >= value
-        if variable == 6: 
-            return self.web_base >= value
-        if variable == 7: 
-            return self.artifice_base >= value
-        if variable == 8: 
-            return self.hp_base >= value
-        if variable == 9: 
-            return self.ap_base >= value
-        if variable == 10: 
-            return self.speed_base >= value
-        if variable == 11: 
-            return self.hide >= value
-        if variable == 12: 
-            return self.detection >= value
-        if variable == 13: 
-            return self.trade >= value
-        if variable == 14:
-            return self.lvl
-        raise Exception(u"Statystyka nie obsługiwana przez metodę")
+        return self.statistic_base(variable) >= value
     
     def has_required_talents_talent(self, talent):
         """Sprawdza, czy bohater ma wymagane talenty do wybrania danego talentu"""
@@ -216,11 +284,33 @@ class Hero(Owner):
             return True
         return False
     
-    def give_talent(self, talent):
-        pass
+    
+    def add_talent(self, talent):
+        """Dodaje bohaterowi i nanosi poprawki z efektów talentu na jego statystyki. UWAGA: przed zastosowaniem metody powinno się sprawdzić, czy bohater spełnia wymagania"""
+        self.talents.add(talent)
+        for number in range(1, 13):
+            add = 0
+            effects_additive = talent.effects.filter(where_works=number).filter(variable=number).filter(percent=False)
+            for e in effects_additive:
+                add += e.value
+            self.statistic_additive(number, add)
+            
+            percent = 0
+            effects_percent = talent.effects.filter(where_works=number).filter(variable=number).filter(percent=True)
+            for e in effects_percent:
+                percent += e.value
+            self.statistic_percent(number, percent)
+ 
+            self.update_stats(number)
+        self.save()
+
+    def update_stats(self, number):
+        self.statistic(number, 0.01 * self.statistic_percent(number) * (self.statistic(number) + self.statistic_additive(number)))
+        
 
     def equip(self, itemInstance):
         pass
+    
     
     def __unicode__(self):
         return self.name
