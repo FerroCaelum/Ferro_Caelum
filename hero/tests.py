@@ -22,7 +22,8 @@ class HeroCanPickTalent(TestCase):
            blood_line=self.malkavian, profession=self.knight, experience=0, energy=100,
            energy_regeneration=30, gold=12345, power_base=70, resistance_base=170,
            dexterity_base=270, perception_base=370, intelligence_base=470, web_base=570,
-           artifice_base=670, hp=770, ap=870, speed=970, detection=1070, hide=1170, trade=1270)
+           artifice_base=670, hp_base=770, ap_base=870, speed_base=970, detection_base=1070, 
+           hide_base=1170, trade_base=1270)
         self.hero.save() 
         
         self.talent1 = Talent(name="Overpower")

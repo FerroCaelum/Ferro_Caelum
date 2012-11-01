@@ -89,6 +89,16 @@ class Hero(Owner):
     hide_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #ukrywanie się
     trade_use = models.DecimalField(max_digits=10, decimal_places=4, validators=[MinValueValidator(0.0)], default=0.0) #handlowanie 
     
+    #statystyki główne bazowe
+    hp_base = models.PositiveIntegerField(default=10) #punkty życia
+    ap_base = models.PositiveIntegerField(default=100) #punkty akcji
+    speed_base = models.PositiveIntegerField(default=100) #prędkość
+    
+    #umiejętności bazowe
+    detection_base = models.PositiveIntegerField(default=0) #detekcja
+    hide_base = models.PositiveIntegerField(default=0) #kamuflaż
+    trade_base = models.PositiveIntegerField(default=0) #handel
+    
     #atrybuty bazowe
     power_base = models.PositiveIntegerField(default=1) #moc
     resistance_base = models.PositiveIntegerField(default=1) #wytrzymałość
@@ -97,6 +107,16 @@ class Hero(Owner):
     intelligence_base = models.PositiveIntegerField(default=1) #inteligencja
     web_base = models.PositiveIntegerField(default=1) #sieć
     artifice_base = models.PositiveIntegerField(default=1) #spryt
+
+    #Addytywne premie do statystyk głównych
+    hp_additive = models.PositiveIntegerField(default=10) #punkty życia
+    ap_additive = models.PositiveIntegerField(default=100) #punkty akcji
+    speed_additive = models.PositiveIntegerField(default=100) #prędkość
+    
+    #Addytywne premie do umiejętności
+    detection_additive = models.PositiveIntegerField(default=0) #detekcja
+    hide_additive = models.PositiveIntegerField(default=0) #kamuflaż
+    trade_additive = models.PositiveIntegerField(default=0) #handel
     
     #Addytywne premie do atrybutów
     power_additive = models.PositiveIntegerField(default=1) #moc
@@ -107,6 +127,16 @@ class Hero(Owner):
     web_additive = models.PositiveIntegerField(default=1) #sieć
     artifice_additive = models.PositiveIntegerField(default=1) #spryt
     
+    #Procentower premie do statystyk głównych
+    hp_percent = models.PositiveIntegerField(default=10) #punkty życia
+    ap_percent = models.PositiveIntegerField(default=100) #punkty akcji
+    speed_percent = models.PositiveIntegerField(default=100) #prędkość
+    
+    #Procentower premie do umiejętności
+    detection_percent = models.PositiveIntegerField(default=0) #detekcja
+    hide_percent = models.PositiveIntegerField(default=0) #kamuflaż
+    trade_percent = models.PositiveIntegerField(default=0) #handel
+        
     #Procentower premie do atrybutów
     power_percent = models.PositiveIntegerField(default=1) #moc
     resistance_percent = models.PositiveIntegerField(default=1) #wytrzymałość
@@ -132,6 +162,19 @@ class Hero(Owner):
     def has_required_bloodline(self, blood_line):
         """Sprawdza, czy bohater posiada wymaganą linię krwii (prawdziwe jeśli wprowadzony jest brak lini krwii)"""
         return True if (not blood_line) or self.blood_line == blood_line else False
+
+    def has_required_stats_talent(self, talent):
+        """Sprawdza, czy bohater posiada wymagane statystyki, do wzięcia talentu"""
+        if not talent.stats_requirements.all():
+            return True
+        requirements = talent.stats_requirements.all()
+        result = True
+        for requirement in requirements:
+            if not self.has_required_stat_value(requirement.variable, requirement.value):
+                break;
+        else:
+            return True
+        return False
     
     def has_required_stat_value(self, variable, value):
         """Sprawdza czy bohater posiada odpowiednią wartość atrybutu"""
@@ -155,22 +198,15 @@ class Hero(Owner):
             return self.ap_base >= value
         if variable == 10: 
             return self.speed_base >= value
+        if variable == 11: 
+            return self.hide >= value
+        if variable == 12: 
+            return self.detection >= value
+        if variable == 13: 
+            return self.trade >= value
         if variable == 14:
             return self.lvl
         raise Exception(u"Statystyka nie obsługiwana przez metodę")
-
-    def has_required_stats_talent(self, talent):
-        """Sprawdza, czy bohater posiada wymagane statystyki, do wzięcia talentu"""
-        if not talent.stats_requirements.all():
-            return True
-        requirements = talent.stats_requirements.all()
-        result = True
-        for requirement in requirements:
-            if not self.has_required_stat_value(requirement.variable, requirement.value):
-                break;
-        else:
-            return True
-        return False
     
     def has_required_talents_talent(self, talent):
         """Sprawdza, czy bohater ma wymagane talenty do wybrania danego talentu"""
@@ -179,6 +215,9 @@ class Hero(Owner):
         if required_list.issubset(hero_talents):
             return True
         return False
+    
+    def give_talent(self, talent):
+        pass
 
     def equip(self, itemInstance):
         pass
