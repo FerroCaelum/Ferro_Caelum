@@ -1,35 +1,33 @@
 # coding: utf-8
 from django.db import models
+from effect.models import Effect, EffectInstance
 from hero.models import Owner
 
 class Item(models.Model):
     name = models.CharField(max_length=50, unique=True)
-    load = models.DecimalField(max_digits=16, decimal_places=5, default=0)
+    load = models.PositiveIntegerField(default=0)
     min_lvl = models.PositiveIntegerField(default=0)
 
-    #icon = models.ImageField()
+    # icon = models.ImageField()
     sellable = models.BooleanField(default=True)
     destroyable = models.BooleanField(default=True)
     tradeable = models.BooleanField(default=True)
     enchantable = models.BooleanField(default=True)
 
-    def effects(self):
-        """Returns effects item produces"""
-        pass
-
     def spawn(self, count, owner):
         """
         Tworzy nowy item z powietrza, a jak już jest w ekwipunku to zwiększa jego ilość.
         """
+
         if count <= 0:
             raise Exception(u'Cannot spawn less then 1 items.')
-
         items = ItemInstance.objects.filter(owner=owner, item=self)
         itemsCount = items.count()
         if itemsCount > 1:
             raise Exception(u'Player has 2 same item instances. Something very bad happened.')
         if itemsCount == 1:
             items[0].count += count
+            items[0].save()
             return items[0]
         if itemsCount == 0:
             newItem = ItemInstance(item=self, count=count, owner=owner)
@@ -47,8 +45,19 @@ class ItemInstance(models.Model):
     To dlatego, że nie sprawdzają uprawnień (np. czy jeden gracz może przekazać item drugiemu).
     Te uprawnienia są sprawdzane wyżej - w Hero.
     """
-    LOCATION_FLAGS = {
-        # 0: "Somewhere", #slot który może mieć wiele itemów TODO
+
+    item = models.ForeignKey(Item)
+    _owner = models.ForeignKey(Owner)
+    _location = models.PositiveIntegerField(null=True, blank=True, default=None) # flagi z LOCATION_FLAGS
+    _count = models.IntegerField(default=1)
+    effects = models.ManyToManyField(EffectInstance)
+
+    # Miejsca gdzie można założyć przedmiot.
+    # Przedmiot może zajmować więcej niż jedno miejsce.
+    # Jeżeli _location jest null to znaczy, że przedmiot nie jest założony.
+    # W przeciwnym wypadku jest założony i na bohatera działają efekty z przedmoitu a slot jest zajęty.
+    LOCATION_NAMES = {
+        # TODO slot który może mieć wiele itemów
         1: "Head",
         2: "LeftHand",
         4: "Torso",
@@ -56,17 +65,8 @@ class ItemInstance(models.Model):
         16: "Legs",
         32: "Shoes",
     }
-    """Miejsca gdzie można założyć przedmiot.
-    Przedmiot może zajmować więcej niż jedno miejsce.
-    Jeżeli _location jest null to znaczy, że przedmiot nie jest założony.
-    W przeciwnym wypadku jest założony i na bohatera działają efekty z przedmoitu a slot jest zajęty."""
-
-    item = models.ForeignKey(Item)
-    _owner = models.ForeignKey(Owner)
-    _location = models.PositiveIntegerField(null=True, blank=True,
-        default=None)# null = plecak reszta może być:
-    # prawa ręka, lewa ręka, buty, etc. zgodnie z LOCATION_FLAGS
-    _count = models.IntegerField(default=1)
+    # Odwrotne mapowanie.
+    LOCATION_FLAGS = dict((v, k) for k, v in LOCATION_NAMES.iteritems())
 
     @property
     def owner(self):
@@ -78,7 +78,7 @@ class ItemInstance(models.Model):
 
         itemsLoad = self.item.load * self.count
         if new_owner.load + itemsLoad > new_owner.max_load:
-            raise Exception(u'Cannot pass xx to xx. Iteems too heavy.')
+            raise Exception(u'Cannot pass xx to xx. Owner cannot bare it.')
 
         self._owner = new_owner
         self.owner.load -= itemsLoad
@@ -89,14 +89,18 @@ class ItemInstance(models.Model):
 
     @property
     def location(self):
-        return self._owner
+        return self._location
 
     @location.setter
     def location(self, new_location):
         if self.location is not None:
             raise Exception(u'Item already worn.')
-        """toDO LOGIKA statsow"""
+        if self.owner.item(new_location) is not None:
+            raise Exception(u'Slot is busy.')
+        if self.owner.lvl > self.item.min_lvl:
+            raise Exception(u'You\'re too low lvl.')
         self._location = new_location
+        self.save()
 
     @property
     def count(self):
@@ -106,10 +110,9 @@ class ItemInstance(models.Model):
     def count(self, value):
         if value < 0: raise Exception(u'Negative count? Really?')
         itemLoad = self.item.load
-        newLoad = self.owner.load + (itemLoad * self.count -
-                                     itemLoad * value)
+        newLoad = self.owner.load + (itemLoad * self.count - itemLoad * value)
         if newLoad > self.owner.max_load:
-            raise Exception(u'Cannot carry additional x of xxx.')
+            raise Exception(u'Cannot carry additional %s of %s.' % (value - self.count, self.item.name))
         if newLoad < 0:
             raise Exception(u'Load < 0')
 
@@ -118,6 +121,8 @@ class ItemInstance(models.Model):
         else:
             self._count = value
         self.owner.load = newLoad
+        self.save()
+        self.owner.save()
 
     def destroy(self):
         self.delete()
