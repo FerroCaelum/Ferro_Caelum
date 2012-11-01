@@ -33,7 +33,7 @@ class TalentsTreeTest(TestCase):
         self.assertEqual(self.talent1.get_talent_requirements_description(),
                           u"Wymagane talenty: " + self.name2)
         
-    def test_more_then_one_child(self):
+    def test_more_then_one_talent_requirament(self):
         self.talent1.talents_required.create(name=self.name3)
         self.talent1.talents_required.create(name=self.name4)
         self.assertEqual(

@@ -118,7 +118,7 @@ class Hero(Owner):
     
     def have_talent(self, talent):
         """Metoda sprawdzająca, czy bohater posiada dany talent"""
-        return True if self.talents.filter(pk__contains=talent.pk) else False
+        return True if self.talents.filter(id=talent.id) else False
     
     def have_required_stat(self, number, value):
         if number == 1: 
@@ -146,18 +146,14 @@ class Hero(Owner):
         raise Exception(u"Statystyka nie obsługiwana przez metodę")
 
     def meets_stats_requirements(self, talent):
-        
         pass
     
-    def meets_talents_requiraments(self, talent):
-        requiraments=talent.talents_required.all()
-        for t in requiraments:
-            if not self.talents.filter(pk__contains=t.pk):
-                is_true = True
-                break
-        else:
-             is_true = False
-        return is_true
+    def has_required_talents(self, talent):
+        required_list = set(talent.talents_required.values_list('id', flat=True))
+        hero_talents = set(self.hero.talents.values_list('id', flat=True))
+        if required_list.issubset(hero_talents):
+            return True
+        return False
     
     def meets_bloodline_requirament(self,talent):
         requirement = talent.blood_line_requirement
@@ -167,7 +163,7 @@ class Hero(Owner):
         """Metoda sprawdzająca, czy bohater może wybrać dany talent"""
         if not self.have_talent(talent):
             if self.meets_bloodline_requirament(talent):
-                if self.meets_talents_requiraments(talent):
+                if self.has_required_talents(talent):
                     if self.meets_stats_requirements(talent):
                         return True
         return False    

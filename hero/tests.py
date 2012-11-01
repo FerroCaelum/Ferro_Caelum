@@ -22,16 +22,19 @@ class HeroTalents(TestCase):
         self.hero.save() 
     
     
-    def test_contains(self):
+    def test_have_talent(self):
+        """Sprawdza, czy Mam talent!"""
         self.talent1 = Talent(name = "Overpower")
         self.talent1.save()
         self.talent2 = Talent(name = "Overpower2")
         self.talent2.save()
         self.hero.talents.add(self.talent1)
         
-        self.assertTrue(self.hero.have_talent(self.talent1), "Bohater posiada talent")
+        self.assertTrue(self.hero.have_talent(self.talent1), "Bohater posiada talent (1 talent)")
         self.assertFalse(self.hero.have_talent(self.talent2), "Bohater nie posiada talentu")
         
+        self.hero.talents.add(self.talent2)
+        self.assertTrue(self.hero.have_talent(self.talent2), "Bohater posiada talent")
         
     def test_meets_bloodline_requirament(self):
         self.malkavian2 = BloodLine(name="Malkavian2", power=8, resistance=8, dexterity=8, perception=9, intelligence=10, web=10, artifice=1,
@@ -49,18 +52,18 @@ class HeroTalents(TestCase):
         self.assertTrue(self.hero.meets_bloodline_requirament(self.talent2), "Dla talentu z wymaganiem posiadanej lini krwii")
         self.assertFalse(self.hero.meets_bloodline_requirament(self.talent3), "Dla talentu z wymaganiem nieposiadanej lini krwii")
 
-#Test do zachowania, na razie nie przechodzi ponieważ metody jeszcze nie działają wpełni poprawnie.
-#    def test_meets_talents_requiraments(self):
-#        self.talent1 = Talent(name = "Overpower")
-#        self.talent1.save()
-#        self.assertFalse(self.hero.meets_talents_requiraments(self.talent1), "Talent, ktorego hero nie posiada (0 posiadanych talntow)")
-#        self.talent2 = Talent(name = "Overpower2")
-#        self.talent2.save()
-#        self.talent2.talents_required.add(self.talent1)
-#        self.hero.talents.add(self.talent1)
-#        self.assertFalse(self.hero.meets_talents_requiraments(self.talent2), "Talent, ktorego hero nie posiada")
-#        self.assertTrue(self.hero.meets_talents_requiraments(self.talent1), "Talent, ktorego hero posiada (1 posiadany talent)")
-#        self.talent3 = Talent(name = "Overpower3")
-#        self.talent3.save()
-#        self.hero.talents.add(talent2)
-#        self.assertTrue(self.hero.meets_talents_requiraments(self.talent2), "Talent, ktorego hero posiada (1 posiadany talent)")
+    def test_has_required_talents(self):
+        self.talent1 = Talent(name = "Overpower")
+        self.talent1.save()
+        self.talent2 = Talent(name = "Overpower2")
+        self.talent2.save()
+        self.talent2.talents_required.add(self.talent1)
+        self.assertFalse(self.hero.has_required_talents(self.talent2), "Wymagania niespelnione (0 posiadanych talentow)")
+        self.hero.talents.add(self.talent1)
+        self.assertTrue(self.hero.has_required_talents(self.talent2), "Wymagania spelnione (1 posiadany talent)")
+        self.talent3 = Talent(name = "Overpower3")
+        self.talent3.save()
+        self.hero.talents.add(self.talent2)
+        self.assertTrue(self.hero.has_required_talents(self.talent3), "Wymagania spelnione")
+        self.talent1.talents_required.add(self.talent3)
+        self.assertFalse(self.hero.has_required_talents(self.talent1), "Wymagania niespelnione")
