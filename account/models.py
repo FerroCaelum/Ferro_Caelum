@@ -25,4 +25,5 @@ def create_user_profile(sender, instance, created, **kwargs):
         Account.objects.create(user=instance)
 
 # to jest w dobrym miejscu? \/
+#ależ oczywiście. W jakim innym?
 post_save.connect(create_user_profile, sender=User)
