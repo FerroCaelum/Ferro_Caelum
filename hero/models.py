@@ -215,22 +215,16 @@ class Hero(Owner):
     
     def statistic_additive(self, number, add=None):
         value = getattr(self, self.STATS_ADDITIVE[number])
-        if add != None:
-            if getattr(self, self.STATS[number]) + value + add > 0:
-                setattr(self, self.STATS_ADDITIVE[number], value + add)
-                return value + add
-            else:
-                raise Exception(u"Wartość atrybutu nie może spaść poniżej 1")
+        if add != 0:
+            setattr(self, self.STATS_ADDITIVE[number], value + add)
+            return value + add
         return value
     
-    def statistic_percent(self, number, add=None):
+    def statistic_percent(self, number, add=0):
         value = getattr(self, self.STATS_PERCENT[number])
-        if add != None:
-            if value + add > -100:
-                setattr(self, self.STATS_PERCENT[number], value + add)
-                return value + add
-            else:
-                raise Exception(u"Wartość atrybutu nie może być zredukowana bardziej niż do 1%")
+        if add != 0:
+            setattr(self, self.STATS_PERCENT[number], value + add)
+            return value + add
         return value
     
     def statistic(self, number, new_value=None):
@@ -310,12 +304,19 @@ class Hero(Owner):
         self.save()
 
     def update_stats(self, number):
-        new_value = 0.01 * (100 + self.statistic_percent(number)) * (self.statistic(number) + self.statistic_additive(number))
+        current_value = self.statistic(number)
+        additive = self.statistic_additive(number)
+        if additive + current_value < 1:
+            additive = 1 - current_value
+        
+        percent = self.statistic_percent(number)   
+        new_value = 0.01 * (100 + percent) * (current_value + additive)
+        
         if new_value > 0:
             self.statistic(number, new_value)
         else:
             self.statistic(number, 1)
-        
+            
 
     def equip(self, itemInstance):
         pass
