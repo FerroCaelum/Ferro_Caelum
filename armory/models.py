@@ -1,7 +1,8 @@
 # coding: utf-8
 from django.db import models
+from hero import *
 from effect.models import Effect, EffectInstance
-from hero.models import Owner
+from hero.models import Stat, Owner
 
 class Item(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -130,60 +131,55 @@ class ItemInstance(models.Model):
     def __unicode__(self):
         return u'%s[%s]' % (self.item, self.count)
 
-
-class Money(Item):
-    pass
-
-
 class Weapon(Item):
-    speed = models.PositiveIntegerField()
-    hit_bonus = models.IntegerField()
-    piercing_dmg = models.IntegerField()
-    energetic_dmg = models.IntegerField()
-    critical = models.IntegerField()
+    speed = models.ForeignKey(Stat, related_name="speed")
+    hit_bonus = models.ForeignKey(Stat, related_name="hit_bonus")
+    piercing_dmg = models.ForeignKey(Stat, related_name="piercing_dmg")
+    energetic_dmg = models.ForeignKey(Stat, related_name="energetic_dmg")
+    critical = models.ForeignKey(Stat, related_name="critical")
 
-
-class Armature(Item):
-    speed_mod = models.PositiveIntegerField()
-    energy_def = models.PositiveIntegerField()
-    piercing_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    camouflage = models.PositiveIntegerField()
-
-
-class Helmet(Item):
-    energy_def = models.PositiveIntegerField()
-    piercing_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    detector = models.PositiveIntegerField()
-    programs_def = models.PositiveIntegerField()
-
-
-class Program(Item):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    type = models.PositiveIntegerField()
-    duration = models.FloatField() # timedelta
-
-
-class FieldTech(Item):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    energy_def = models.PositiveIntegerField()
-    strike_def = models.PositiveIntegerField()
-    range_def = models.PositiveIntegerField()
-    durability = models.PositiveIntegerField()
-    count = models.PositiveIntegerField()
-
-
-class WebTech(Item):
-    speed = models.PositiveIntegerField()
-    pool = models.PositiveIntegerField()
-    energy_dmg = models.PositiveIntegerField()
-    strike_dmg = models.PositiveIntegerField()
-    piercing_dmg = models.PositiveIntegerField()
-    critic = models.PositiveIntegerField()
-
-
-class SpecialProperties(models.Model):
-    item = models.ForeignKey(ItemInstance)
+#
+#class Armature(Item):
+#    speed_mod = models.PositiveIntegerField()
+#    energy_def = models.PositiveIntegerField()
+#    piercing_def = models.PositiveIntegerField()
+#    strike_def = models.PositiveIntegerField()
+#    camouflage = models.PositiveIntegerField()
+#
+#
+#class Helmet(Item):
+#    energy_def = models.PositiveIntegerField()
+#    piercing_def = models.PositiveIntegerField()
+#    strike_def = models.PositiveIntegerField()
+#    detector = models.PositiveIntegerField()
+#    programs_def = models.PositiveIntegerField()
+#
+#
+#class Program(Item):
+#    speed = models.PositiveIntegerField()
+#    pool = models.PositiveIntegerField()
+#    type = models.PositiveIntegerField()
+#    duration = models.FloatField() # timedelta
+#
+#
+#class FieldTech(Item):
+#    speed = models.PositiveIntegerField()
+#    pool = models.PositiveIntegerField()
+#    energy_def = models.PositiveIntegerField()
+#    strike_def = models.PositiveIntegerField()
+#    range_def = models.PositiveIntegerField()
+#    durability = models.PositiveIntegerField()
+#    count = models.PositiveIntegerField()
+#
+#
+#class WebTech(Item):
+#    speed = models.PositiveIntegerField()
+#    pool = models.PositiveIntegerField()
+#    energy_dmg = models.PositiveIntegerField()
+#    strike_dmg = models.PositiveIntegerField()
+#    piercing_dmg = models.PositiveIntegerField()
+#    critic = models.PositiveIntegerField()
+#
+#
+#class SpecialProperties(models.Model):
+#    item = models.ForeignKey(ItemInstance)
