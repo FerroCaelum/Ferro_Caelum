@@ -6,13 +6,6 @@ import random
 
 class Battle :
         distance = 0
-        distance_attack_cost = 12
-        close_attack_cost = 8
-        web_attack_cost = 15
-        activate_field_cost = 30
-        activate_program_cost = 10
-        activate_virus_cost = 10
-        get_closer_cost = 5
 
         #gicior
         def __init__(self,hero1_id,hero2_id):
@@ -29,9 +22,6 @@ class Battle :
             self.stack_uno=[]
             self.stack_dos=[]
             init_equipement()
-
-        def init_equipement(self):
-            pass
 
 
 
@@ -102,31 +92,19 @@ class Battle :
             #co to kurwa jest.
             #self.send_log(log)
 
-            # w sumie to jest kurna niepotrzebne
-            #self.add_logs_to_db(self.log_list)
-
-
-
-
-#        def add_logs_to_db(self,log_list):
-#            # tu bedzie cośtam cośtam. Proponuję taki format loga:
-#            # [current.name, current.hp, current.ap, enemy.name, enemy.hp, enemy.ap, opis_słowny]
-#            pass
-
-
-
         #UWAGA: NIE MA MIEJSCA NA PROGRAMY/WIRUSY. SIEC OBECNIE JEST W GLOWIE.
         #UWAGA: DODAĆ KRYTYKI
 
         #zrobione wszystko poza krytykiem, nieprzekonwertowane
         def close_attack(self,current,enemy):
             weapon = current.item("RightHand")
+            en_armor = enemy.item("Torso")
             cost = weapon.item.speed
             attack_chance = 0.4 * current.get_updated_power() + 0.4 * current.get_updated_dexternity() + 0.1 * current.get_updated_web() + 0.1 * current.melee_attack
             success = random.randrange(0,101)
             if success < attack_chance:
                 current.current_ap -= cost
-                enemy.current_hp -= (weapon.piercing_dmg + weapon.energetic_dmg)
+                enemy.current_hp -= ((weapon.piercing_dmg + weapon.energetic_dmg)-(en_armor.item.energy_def+en_armor.item.piercing_def))
                 return [current.name, current.current_hp, current.current_ap, enemy.name,
                         enemy.current_hp, enemy.current_ap, u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_updated_power()]
             else:
@@ -138,12 +116,13 @@ class Battle :
         #zrobione wszystko poza krytykiem, nieprzekonwertowane
         def distance_attack(self,current,enemy):
             weapon = current.item("RightHand")
+            en_armor = enemy.item("Torso")
             cost = weapon.speed
             attack_chance = 0.4 * current.get_updated_perception() + 0.4 * current.get_updated_dexternity() + 0.1 * current.get_updated_web() + 0.1 * current.melee_attack
             success = random.randrange(0,101)
             if success < attack_chance:
                 current.current_ap -= cost
-                enemy.current_hp -= (weapon.energetic_dmg+weapon.piercing_dmg)
+                enemy.current_hp -= ((weapon.energetic_dmg+weapon.piercing_dmg)-(en_armor.item.energy_def+en_armor.item.piercing_def))
                 return [current.name, current.current_hp, current.current_ap, enemy.name,enemy.current_hp, enemy.current_ap,
                         u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_updated_perception()]
             else:
@@ -237,11 +216,12 @@ class Battle :
             #zmieniamy forme web - bedzie po prostu atakiem z innych statsow, nie wymagajacym ladowania. Kwestie balansu
             #przedstawie na konferencji
             field_tech = current.item("Head")
+            en_armor = enemy.item("Torso")
             cost = field_tech.item.speed
             boop = current.get_updated_web() * 0.4 + current.get_updated_intelligence() * 0.2 +\
                    current.get_updated_perception() * 0.2 + current.web_use * 0.1
             dice = random.randrange(0,101)
-            da_dmg = field_tech.item.energy_dmg + field_tech.item.strike_dmg
+            da_dmg = (field_tech.item.energy_dmg + field_tech.item.strike_dmg)-(en_armor.item.energy_def+en_armor.item.piercing_def)
             if dice < boop:
                 current.current_ap -= cost
                 enemy.current_hp -= da_dmg
