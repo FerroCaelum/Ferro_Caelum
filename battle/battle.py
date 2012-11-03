@@ -28,20 +28,12 @@ class Battle :
             self.init_equipment()
             self.stack_uno=[]
             self.stack_dos=[]
-            #tak, silly python, istnieje taka metoda jak init_equipement()
             init_equipement()
 
+        def init_equipement(self):
+            pass
 
-        #zjebane. Trzeba to wypierdolic
-        def init_equipment(self):
-            #tu zaczną wchodzić statystyki związane z ekwipunkiem, a istniające o wartości z ekwipunku zmodyfikowane, w razie potrzeby.
-            #TODO: zasadniczo to powinno byc w hero. Albo inicjalnie dac dla dwóch graczy i, łopatopogicznie, uno dos.
-            energy_def = 0
-            pen_def = 0
-            hit_def = 0
-            net_dodge = 0
-            melee_dodge = 0
-            dist_dodge = 0
+
 
 
         #wybdabar
@@ -123,38 +115,37 @@ class Battle :
 
 
 
-        #disclaimer = wszystkie efekty z ekwipunku pominięto. Niestety, nie ma ekwipunku.
+        #UWAGA: NIE MA MIEJSCA NA PROGRAMY/WIRUSY. SIEC OBECNIE JEST W GLOWIE.
         #UWAGA: DODAĆ KRYTYKI
 
-        #zrobione wszystko poza ekwipunkiem i krytykiem, nieprzekonwertowane
+        #zrobione wszystko poza krytykiem, nieprzekonwertowane
         def close_attack(self,current,enemy):
-            #symulacja kosztu broni
-            cost = random.randrange(0,5)
-            attack = 0.4 * current.get_static(1) + 0.4 * current.get_static(3) + 0.1 * current.get_static(6) + 0.1 * current.melee_attack
+            weapon = current.item("RightHand")
+            cost = weapon.item.speed
+            attack_chance = 0.4 * current.get_updated_power() + 0.4 * current.get_updated_dexternity() + 0.1 * current.get_updated_web() + 0.1 * current.melee_attack
             success = random.randrange(0,101)
-            if success < attack:
-                #przeciwnik dostaje obrazenia, ale lol - nie ma ekwipunku, wiec dostaje w ryj mocą
+            if success < attack_chance:
                 current.current_ap -= cost
-                enemy.current_hp -= current.get_static(1)
+                enemy.current_hp -= (weapon.piercing_dmg + weapon.energetic_dmg)
                 return [current.name, current.current_hp, current.current_ap, enemy.name,
-                        enemy.current_hp, enemy.current_ap, u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_static(1)]
+                        enemy.current_hp, enemy.current_ap, u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_updated_power()]
             else:
                 current.current_ap -= cost
                 return [current.name, current.current_hp, current.current_ap, enemy.name,
                         enemy.current_hp, enemy.current_ap, u'%s nie trafia!'%current.name]
 
 
-        #zrobione wszystko poza ekwipunkiem i krytykiem, nieprzekonwertowane
+        #zrobione wszystko poza krytykiem, nieprzekonwertowane
         def distance_attack(self,current,enemy):
-            cost = random.randrange(0,5)
-            attack = 0.4 * current.get_static(4) + 0.4 * current.get_static(3) + 0.1 * current.get_static(6) + 0.1 * current.melee_attack
+            weapon = current.item("RightHand")
+            cost = weapon.speed
+            attack_chance = 0.4 * current.get_updated_perception() + 0.4 * current.get_updated_dexternity() + 0.1 * current.get_updated_web() + 0.1 * current.melee_attack
             success = random.randrange(0,101)
-            if success < attack:
-                #przeciwnik dostaje obrazenia, ale lol - nie ma ekwipunku jako takiego, wiec dostaje w ryj sprawnością. A co tam.
+            if success < attack_chance:
                 current.current_ap -= cost
-                enemy.current_hp -= current.get_static(4)
+                enemy.current_hp -= (weapon.energetic_dmg+weapon.piercing_dmg)
                 return [current.name, current.current_hp, current.current_ap, enemy.name,enemy.current_hp, enemy.current_ap,
-                        u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_static(4)]
+                        u'%s atakuje %s za %s obrażeń!'%current.name, enemy.name, current.get_updated_perception()]
             else:
                 current.current_ap -= cost
                 return [current.name, current.current_hp, current.current_ap, enemy.name,enemy.current_hp,
@@ -168,12 +159,13 @@ class Battle :
             return [current.name, current.current_hp, current.current_ap, enemy.name,enemy.current_hp, enemy.current_ap,
                     u'%s zapierdala %s metrów!'%current.name, current.movement_speed]
 
+
         #nie mam kurwa pojęcia. Ale chyba dobrze. Nieprzekonwertowane
         def activate_virus(self,current,enemy):
             cost = random.randrange(0,5)
             temp = random.randrange(1,cost+1) #pula. Co to jest pula?
-            boop = 0.7 * current.get_static(5) + 0.2 * current.get_static(6) + 0.1 * current.programming
-            contraboop = 0.8 * enemy.get_static(5) + 0.2 * enemy.get_static(6) + 0.1 * enemy.programming
+            boop = 0.7 * current.get_updated_intelligence() + 0.2 * current.get_updated_web() + 0.1 * current.programming
+            contraboop = 0.8 * enemy.get_updated_intelligence() + 0.2 * enemy.get_updated_web() + 0.1 * enemy.programming
             dice = random.randrange(0,101)
             dice2 = random.randrange(0,101)
             #zasadniczo to dzialka matiego, ale chyba jest dobrze. W takim razie to potrzebne?
@@ -202,7 +194,7 @@ class Battle :
         def activate_program(self,current,enemy):
             cost = random.randrange(0,5)
             temp = random.randrange(1,cost+1) #pula. Co to jest pula?
-            boop = 0.9 * current.get_static(5) + 0.1 * current.programming
+            boop = 0.9 * current.get_updated_intelligence() + 0.1 * current.programming
             dice = random.randrange(0,101)
             if dice < boop:
                 program = current.programs[current.program_cursor]
@@ -223,7 +215,7 @@ class Battle :
         def activate_field(self,current, enemy):
             cost = random.randrange(0,5)
             temp = random.randrange(1,cost+1) #pula. Co to jest pula?
-            boop = 0.9 * current.get_static(5) + 0.1 * current.programming
+            boop = 0.9 * current.get_updated_intelligence() + 0.1 * current.programming
             dice = random.randrange(0,101)
             if dice < boop:
                 field = current.field
@@ -240,15 +232,16 @@ class Battle :
                 u'Kontemplacje widoku za oknem w pociągach linii kraków - wrocław. Widoki chujowe jak barszcz.'
                 u' Moze dlatego, że jest już ciemno. %s to fag, nie potrafi nawet programu rzucić'% current.name]
 
-        #done and resolved poza eq i krytykiem...jesli jakis bedzie. Znow, kwestia balansu.
+        #done and resolved poza krytykiem...jesli jakis bedzie. Znow, kwestia balansu.
         def web_attack(self,current,enemy):
             #zmieniamy forme web - bedzie po prostu atakiem z innych statsow, nie wymagajacym ladowania. Kwestie balansu
             #przedstawie na konferencji
-            cost = random.randrange(0,5)
+            field_tech = current.item("Head")
+            cost = field_tech.item.speed
             boop = current.get_updated_web() * 0.4 + current.get_updated_intelligence() * 0.2 +\
                    current.get_updated_perception() * 0.2 + current.web_use * 0.1
             dice = random.randrange(0,101)
-            da_dmg = random.randrange(0, cost+1000)
+            da_dmg = field_tech.item.energy_dmg + field_tech.item.strike_dmg
             if dice < boop:
                 current.current_ap -= cost
                 enemy.current_hp -= da_dmg
