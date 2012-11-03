@@ -2,3 +2,5 @@
 .project
 .pydevproject
 .settings
+.idea
+ferro_caelum.sqlite
