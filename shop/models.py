@@ -2,7 +2,7 @@
 __author__ = 'episage'
 
 from django.db import models
-from hero.models import *
+from hero.hero import *
 
 class Shop(Owner):
     pass

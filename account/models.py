@@ -3,7 +3,7 @@ __author__ = 'Tyr'
 
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
-from hero.models import Hero
+from hero.hero import Hero
 from django.db import models
 
 class Account(models.Model):

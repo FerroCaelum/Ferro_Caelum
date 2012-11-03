@@ -4,7 +4,7 @@ from armory.models import Item
 __author__ = 'episage'
 
 from django.db import models
-from hero.models import *
+from hero.hero import *
 import datetime
 
 class AuctionHouse(Owner):

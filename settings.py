@@ -129,8 +129,6 @@ INSTALLED_APPS = (
     'blood_line',
     'profession',
     'ability',
-    'talent',
-    'effect',
     'hero',
     'account',
     'armory',
