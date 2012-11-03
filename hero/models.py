@@ -1,9 +1,9 @@
 # coding: utf-8
 import random
 from symbol import power
-
 from django.db import models
 from django.core.validators import MinValueValidator
+from ability.models import Ability
 from armory import models
 from blood_line.models import BloodLine
 from profession.models import Profession
@@ -95,22 +95,29 @@ class Hero(Owner):
     #statystyki bojowe - nie ogarniam, czy wyjdzie, wiec pisze w dwoch miejscach
     health_points = hp + resistance * 2
     #Staystyki nieobsługiwana przez getter:
-    virus_resist = antyvirus_use + 0.5 * resistance + 0.5 * intelligence
+    virus_resist = antivirus_use + 0.5 * resistance + 0.5 * intelligence
     hiding = hide_use + dexternity # + kamuflarz ?
     detection = detection_use + perception # + detektor ?
     movement_speed = quick_move + 0.5 * power
     #Trzeba nad tym podyskutować
-    weapon_switching_speed_uno = 90001
+    weapon_switching_speed = 90001
     #koniec statystyk bojowych
 
     #atrybuty wymagane w battle
     programs = []
     viruses = []
-    field = models.ForeignKey(Ability, null=true)
+    field = models.ForeignKey(Ability, null=True)
     ability_stack = []
-    is_field_activate = false
+    is_field_activate = False
     current_ap = ap
     current_hp = hp
+
+    energy_def = 0
+    pen_def = 0
+    hit_def = 0
+    net_dodge = 0
+    melee_dodge = 0
+    dist_dodge = 0
 
 
 
@@ -138,12 +145,12 @@ class Hero(Owner):
             return self.speed
         if number == 14:
             return self.lvl
-        raise u"Statystyka nie obsługiwana przez metodę"
+        raise Exception(u"Statystyka nie obsługiwana przez metodę")
         
     def get_updated_statistic(self, number):
         """Metoda zwracająca wartość statystyki o danym numerze z ulepszeniami wynikającymi z wszelkich efektów na nią
         oddziałujących. UWAGA: metoda niekompletna - uwzględnia efekty pochodzące jedynie od talentów"""
-        if number > 10: raise u'Statystyka nieobsługiwana.'
+        if number > 10: raise Exception(u'Statystyka nieobsługiwana.')
         tes = set() #Zbiór wszystkich efektów addytywnych wpływajacych na daną statystykę,
                       # pobrana ze wszystkich talentów bohatera
         tem = set() #Zbiór wszystkich efektów multiplikatywnych wpływajacych na daną statystykę,
@@ -256,17 +263,18 @@ class Hero(Owner):
     def meets_stats_requirements(self, talent):
         pass
     
-    def meets_talents_requiraments(self, talent):
+    def meets_talents_requirements(self, talent):
         pass
     
-    def meets_bloodline_requirament(self,talent):
+    def meets_bloodline_requirement(self,talent):
         requirement = talent.blood_line_requirement
         return True if (not requirement) or self.blood_line == requirement else False
             
     def can_pick_talent(self, talent):
         """Metoda sprawdzająca, czy bohater może wybrać dany talent"""
-        if self.meets_bloodline_requirament(talent):
-            if self.meets_talents_requiraments(talent):
+        #może jeden warunek?
+        if self.meets_bloodline_requirement(talent):
+            if self.meets_talents_requirements(talent):
                 if self.meets_stats_requirements(talent):
                     return True
         return False    
